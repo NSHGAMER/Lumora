@@ -39,31 +39,69 @@
      - `PHASES.md`: 11-phase development roadmap (Phases 0–10) with exact status tracking.
      - `DESIGN.md`: Locked visual language, token architecture, and typography standards.
      - `MEMORY.md`: Persistent project state, decisions, and task tracker.
+6. **Phase 1 Public Experience & UX Resilience Implementation:**
+   - **Legal Compliance Suite:**
+     - `/privacy` (`PrivacyPolicyView.tsx`) with institutional data handling, JSR data policies, and disclaimers.
+     - `/terms` (`TermsOfServiceView.tsx`) with acceptable use, AI verification requirements, and liability boundaries.
+     - `/cookie-preferences` (`CookiePreferencesView.tsx`) with essential/preferences/analytics category toggles and `localStorage` persistence.
+     - Reusable preference hook `useCookiePreferences.ts`.
+   - **Resilient UX Error & Status Suite:**
+     - `/404` (`Error404View.tsx`) "Signal Lost" with spatial telemetry diagnostics and navigation back to campus hub.
+     - `/403` (`Error403View.tsx`) "Access Restricted" with RBAC enforcement notice without leaking authorization internals.
+     - `/500` (`Error500View.tsx`) "System Fault" with safe fault isolation and zero credential/stack trace leaks.
+     - `/maintenance` (`MaintenanceView.tsx`) Institutional maintenance status screen with operational window placeholder and node status check.
+     - React `ErrorBoundary.tsx` wrapping the application viewport to catch unexpected rendering anomalies and present the 500 state safely.
+   - **Reusable Skeleton Loading Suite (`src/components/ui/skeleton/`):**
+     - Base `Skeleton`, `SkeletonText`, `SkeletonAvatar`, `SkeletonCard`, `SkeletonTable`, `SkeletonList`, `SkeletonDashboard`, `SkeletonProfile`, `SkeletonAIResponse`, `SkeletonCampus`.
+   - **Routing & Navigation Architecture:**
+     - History API synchronization (`window.location.pathname`, `pushState`, `popstate` event handling).
+     - Automatic 404 fallback for any unrecognized routes.
+     - Integrated legal and maintenance routes into `Footer.tsx` and `CommandPalette.tsx` without changing locked landing UI.
+
+7. **Phase 2A Authentication UI & Lifecycle Foundation:**
+   - **Frontend Authentication Architecture (`src/auth/`):**
+     - `AuthContext.tsx` & `useAuth.ts`: State management for authenticated user, status, and theme.
+     - `authStorage.ts`: Secure local persistence for theme tokens and isolated demo sessions. Zero storage of passwords or fake production JWTs.
+     - `ProtectedRoute.tsx`: Reusable route wrapper enforcing session clearance and role matching with fallback challenge card.
+     - Theme Controller: Supports `dark` (primary default), `light`, and `system` modes without altering locked landing visual baseline.
+   - **Authentication Views (`src/components/auth/`):**
+     - `/login` (`LoginView.tsx`): Email/ID + password with visibility toggle, remember session, and quick demo profile preview.
+     - `/register` (`RegisterView.tsx`): Full name, institutional email, password strength meter, student/faculty role selector, and explicit immediate activation badge.
+     - **CRITICAL INVARIANTS PRESERVED:** NO email verification, NO verification email, NO confirmation email, NO SMTP dependency, NO "verify your email" screen.
+     - `/forgot-password` (`ForgotPasswordView.tsx`): Institutional recovery protocol with zero SMTP dependency or fake email sends.
+     - `/reset-password` (`ResetPasswordView.tsx`): Secure credential update UI with checklist criteria and immediate login routing.
+     - `/account` (`AccountSettingsView.tsx`): Profile metadata, in-session password change, active sessions indicator, theme switcher, and sign out.
+   - **Navigation Integration:**
+     - Integrated account console and sign-in shortcuts into Navbar role dropdown and Command Palette (`Cmd+K`).
 
 ---
 
 ## C. Current Phase
-- **Phase 0 — Foundation:** `Completed`
-- **Phase 1 — Public Experience:** `In Progress` (Completing legal compliance suite and UX error/loading states)
+- **Phase 0 — Foundation:** `Completed` (`Implemented` & `Tested`)
+- **Phase 1 — Public Experience & Resilience:** `Completed` (`Implemented` & `Tested`)
+- **Phase 2A — Authentication UI & Lifecycle Foundation:** `Completed` (`Implemented` & `Tested`)
+- **Phase 2B — FastAPI Backend & MongoDB Persistence:** `Planned` (Next Phase)
 
 ---
 
 ## D. Current Active File
-- Project Governance Documentation Suite: `PRD.md`, `ARCHITECTURE.md`, `RULES.md`, `PHASES.md`, `DESIGN.md`, `MEMORY.md`.
+- `src/App.tsx` (Wrapped in AuthProvider, routing all Phase 1 & 2A views)
 
 ---
 
 ## E. Last Completed Task
-- Established and synced all 6 core project governance and specification files in the project root.
-- Verified that the current application compiles and builds cleanly without errors (`npm run build` exits 0, `oxlint` 0 warnings, 0 errors).
+- Implemented and verified Phase 2A: Authentication UI routes, AuthContext abstraction, ProtectedRoute gate, theme switcher, and role preview. Verified with `oxlint` (0 errors, 0 warnings) and `npm run build` (success in 944ms).
 
 ---
 
 ## F. Next Task
-- Implement Phase 1 missing public experiences according to the locked Lumora design system:
-  1. Legal pages: `/privacy`, `/terms`, `/cookie-preferences`
-  2. UX Error & Status states: `404 Not Found`, `403 Forbidden`, `500 Server Error`, `Maintenance Mode`
-  3. Reusable Skeleton Loading components for cards, tables, dashboards, and AI responses.
+- Phase 2B — FastAPI Backend & MongoDB Persistence:
+  - Setup FastAPI application structure and CORS/security configuration.
+  - Implement `/api/v1/auth/register` with Argon2id / Bcrypt password hashing.
+  - Implement `/api/v1/auth/login` issuing short-lived JWT access tokens and HTTP-only refresh cookies.
+  - Setup MongoDB Atlas connection pooling and User document schema.
+  - Connect frontend AuthContext to live FastAPI endpoints.
+  - Preserve core rule: Immediate account activation upon registration with zero SMTP/email verification.
 
 ---
 

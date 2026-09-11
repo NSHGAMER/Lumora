@@ -95,10 +95,31 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenJSR }) => {
           <div>
             © {new Date().getFullYear()} Lumora Systems Inc. The Intelligent Campus Operating System.
           </div>
-          <div className="flex items-center gap-6">
-            <span className="hover:text-slate-300 transition-colors cursor-pointer">Privacy Protocol</span>
-            <span className="hover:text-slate-300 transition-colors cursor-pointer">Security Certs</span>
-            <span className="hover:text-slate-300 transition-colors cursor-pointer">System Status</span>
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+            <button
+              onClick={() => onSelectTab('privacy')}
+              className="hover:text-cyan-400 transition-colors cursor-pointer"
+            >
+              Privacy Protocol
+            </button>
+            <button
+              onClick={() => onSelectTab('terms')}
+              className="hover:text-cyan-400 transition-colors cursor-pointer"
+            >
+              Terms of Service
+            </button>
+            <button
+              onClick={() => onSelectTab('cookie-preferences')}
+              className="hover:text-cyan-400 transition-colors cursor-pointer"
+            >
+              Cookie Preferences
+            </button>
+            <button
+              onClick={() => onSelectTab('maintenance')}
+              className="hover:text-cyan-400 transition-colors cursor-pointer"
+            >
+              System Status
+            </button>
           </div>
         </div>
 

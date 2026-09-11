@@ -119,6 +119,29 @@ export const Navbar: React.FC<NavbarProps> = ({
                     {role === r && <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />}
                   </button>
                 ))}
+
+                <div className="pt-1 mt-1 border-t border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onSelectTab('account');
+                      setShowRoleDropdown(false);
+                    }}
+                    className="w-full px-3 py-1.5 text-left text-xs font-mono text-cyan-300 hover:bg-white/5 transition-colors cursor-pointer"
+                  >
+                    Account Settings
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onSelectTab('login');
+                      setShowRoleDropdown(false);
+                    }}
+                    className="w-full px-3 py-1.5 text-left text-xs font-mono text-slate-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+                  >
+                    Sign In / Register
+                  </button>
+                </div>
               </div>
             )}
           </div>

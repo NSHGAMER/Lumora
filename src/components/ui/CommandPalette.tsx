@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Command, Sparkles, LayoutDashboard, Calendar, MapPin, Cpu, ArrowRight, X } from 'lucide-react';
+import { Search, Command, Sparkles, LayoutDashboard, Calendar, MapPin, Cpu, ArrowRight, X, Shield, Scale, Cookie, User, LogIn, UserPlus } from 'lucide-react';
 import type { ActiveTab } from '../../types';
 
 interface CommandPaletteProps {
@@ -95,6 +95,66 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       icon: Cpu,
       action: () => {
         onOpenJSR('Check quantum lab GPU station availability');
+        onClose();
+      },
+    },
+    {
+      id: 'cmd-7',
+      title: 'Review Institutional Privacy Protocol',
+      category: 'Legal & Governance',
+      icon: Shield,
+      action: () => {
+        onSelectTab('privacy');
+        onClose();
+      },
+    },
+    {
+      id: 'cmd-8',
+      title: 'View Platform Terms of Service',
+      category: 'Legal & Governance',
+      icon: Scale,
+      action: () => {
+        onSelectTab('terms');
+        onClose();
+      },
+    },
+    {
+      id: 'cmd-9',
+      title: 'Configure Cookie & Telemetry Preferences',
+      category: 'Preferences',
+      icon: Cookie,
+      action: () => {
+        onSelectTab('cookie-preferences');
+        onClose();
+      },
+    },
+    {
+      id: 'cmd-10',
+      title: 'Account Settings & Security Profile',
+      category: 'Account',
+      icon: User,
+      action: () => {
+        onSelectTab('account');
+        onClose();
+      },
+    },
+    {
+      id: 'cmd-11',
+      title: 'Sign In to Campus OS Console',
+      category: 'Account',
+      icon: LogIn,
+      action: () => {
+        onSelectTab('login');
+        onClose();
+      },
+    },
+    {
+      id: 'cmd-12',
+      title: 'Register New Campus Account Profile',
+      category: 'Account',
+      icon: UserPlus,
+      action: () => {
+        onSelectTab('register');
         onClose();
       },
     },

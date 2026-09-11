@@ -15,10 +15,10 @@ Phases are executed systematically. Future phases must not be implemented premat
 ## Roadmap Overview
 
 ```
-[Phase 0: Foundation] ──────────────────────────► (COMPLETED / ACTIVE)
+[Phase 0: Foundation] ──────────────────────────► (COMPLETED / IMPLEMENTED)
         │
         ▼
-[Phase 1: Public Experience & Legal / UX] ──────► (IN PROGRESS)
+[Phase 1: Public Experience & Legal / UX] ──────► (COMPLETED / IMPLEMENTED & TESTED)
         │
         ▼
 [Phase 2: Authentication & User Lifecycle] ─────► (PLANNED)
@@ -69,49 +69,55 @@ Phases are executed systematically. Future phases must not be implemented premat
 ---
 
 ### PHASE 1 — Public Experience & Resilience
-**Status:** `In Progress`
-- [x] Approved Hero section with interactive 3D and system stats (`Implemented`)
-- [x] Problem & transformation section (`Implemented`)
-- [x] JSR Core presentation section (`Implemented`)
-- [x] Living Campus real-time spatial section (`Implemented`)
-- [x] Operating system metrics counter (`Implemented`)
-- [x] Interactive feature showcase and tabs (`Implemented`)
-- [x] Institutional testimonials grid (`Implemented`)
-- [x] Public navigation header and global footer (`Implemented`)
-- [ ] **Legal & Compliance Suite:**
-  - [ ] `/privacy` — Institutional data collection, user rights, data retention policy (`Documented`, `Planned`)
-  - [ ] `/terms` — Acceptable use, institutional boundaries, AI system limits (`Documented`, `Planned`)
-  - [ ] `/cookie-preferences` — Interactive modal/page for preference toggling & persistence (`Documented`, `Planned`)
-- [ ] **Resilient UX Error & Status States:**
-  - [ ] `404 Not Found` — Futuristic cosmic/spatial navigation recovery page (`Documented`, `Planned`)
-  - [ ] `403 Forbidden` — Access denied with role escalation options (`Documented`, `Planned`)
-  - [ ] `500 Server Error` — Graceful error containment without raw trace exposure (`Documented`, `Planned`)
-  - [ ] `Maintenance Mode` — Planned institutional maintenance status board (`Documented`, `Planned`)
-  - [ ] Reusable Skeleton Loading Suite (Cards, Tables, Dashboards, Lists, AI responses) (`Documented`, `Planned`)
+**Status:** `Implemented` & `Tested`
+- [x] Approved Hero section with interactive 3D and system stats (`Implemented`, `Tested`)
+- [x] Problem & transformation section (`Implemented`, `Tested`)
+- [x] JSR Core presentation section (`Implemented`, `Tested`)
+- [x] Living Campus real-time spatial section (`Implemented`, `Tested`)
+- [x] Operating system metrics counter (`Implemented`, `Tested`)
+- [x] Interactive feature showcase and tabs (`Implemented`, `Tested`)
+- [x] Institutional testimonials grid (`Implemented`, `Tested`)
+- [x] Public navigation header and global footer (`Implemented`, `Tested`)
+- [x] **Legal & Compliance Suite:**
+  - [x] `/privacy` — Institutional data collection, user rights, data retention policy (`Implemented`, `Tested`)
+  - [x] `/terms` — Acceptable use, institutional boundaries, AI system limits (`Implemented`, `Tested`)
+  - [x] `/cookie-preferences` — Interactive modal/page for preference toggling & persistence (`Implemented`, `Tested`)
+- [x] **Resilient UX Error & Status States:**
+  - [x] `404 Not Found` — Futuristic cosmic/spatial navigation recovery page (`Implemented`, `Tested`)
+  - [x] `403 Forbidden` — Access denied with role escalation options (`Implemented`, `Tested`)
+  - [x] `500 Server Error` — Graceful error containment without raw trace exposure (`Implemented`, `Tested`)
+  - [x] `Maintenance Mode` — Institutional maintenance status board (`Implemented`, `Tested`)
+  - [x] Reusable Skeleton Loading Suite (Base, Text, Avatar, Card, Table, List, Dashboard, Profile, AIResponse, Campus) (`Implemented`, `Tested`)
+  - [x] React Error Boundary catching render anomalies and rendering 500 state (`Implemented`, `Tested`)
 
 ---
 
-### PHASE 2 — Authentication & User Lifecycle
+### PHASE 2A — Authentication UI & Lifecycle Foundation
+**Status:** `Implemented` & `Tested`
+- [x] **Authentication Frontend Architecture:**
+  - [x] Auth Context & State Provider (`AuthContext.tsx`, `useAuth.ts`, `authTypes.ts`).
+  - [x] Secure storage abstraction with zero password leakage (`authStorage.ts`).
+  - [x] Reusable Protected Route gate (`ProtectedRoute.tsx`) with role verification.
+  - [x] Theme system integration (`dark`, `light`, `system`) with instant switching and persistence.
+- [x] **Authentication Routes & Views:**
+  - [x] `/login` (`LoginView.tsx`) — Email/ID + password with visibility toggle, remember session, validation, and demo profile preview.
+  - [x] `/register` (`RegisterView.tsx`) — Full name, institutional email, password strength meter, role selector, and explicit immediate activation badge.
+  - [x] **CRITICAL INVARIANT:** NO email verification, NO verification email, NO confirmation email, NO SMTP dependency, NO "verify your email" screen.
+  - [x] `/forgot-password` (`ForgotPasswordView.tsx`) — Institutional recovery guidance with zero SMTP dependency or fake email sends.
+  - [x] `/reset-password` (`ResetPasswordView.tsx`) — Secure credential update UI with criteria checklist and immediate login routing.
+  - [x] `/account` (`AccountSettingsView.tsx`) — Profile metadata, in-session password change, active sessions indicator, theme switcher, and sign out.
+  - [x] Integration with Navbar role dropdown and Command Palette (`Cmd+K`).
+
+---
+
+### PHASE 2B — FastAPI Backend Authentication & MongoDB Persistence
 **Status:** `Planned`
-- [ ] **Registration Flow:**
-  - [ ] Frontend form: Institutional ID / username, email, password, role selection.
-  - [ ] Backend validation & password hashing (Argon2 / Bcrypt).
-  - [ ] Immediate account activation (`is_active = true`).
-  - [ ] **STRICT INVARIANT:** NO email verification, NO verification email, NO confirmation email, NO SMTP dependency, NO "verify your email" screen.
-- [ ] **Login & Session Management:**
-  - [ ] Email/ID + password with visibility toggle.
-  - [ ] JWT access & refresh token exchange.
-  - [ ] Session persistence & auto-refresh.
-  - [ ] Safe logout and token revoking.
-- [ ] **Role-Based Access Control (RBAC):**
-  - [ ] Roles: `student`, `faculty`, `admin`, `management`, `staff`.
-  - [ ] Client route guards and permission gates.
-- [ ] **Account Settings:**
-  - [ ] Profile overview and identity metadata.
-  - [ ] Authenticated in-session password change.
-  - [ ] Theme preference switcher (Dark / Light / System) with `localStorage` persistence.
-- [ ] **Password Recovery (Planned):**
-  - [ ] Documented feature without SMTP dependency; awaiting administrator-assisted or institutional reset integration.
+- [ ] FastAPI authentication routers (`/api/v1/auth/register`, `/api/v1/auth/login`, `/api/v1/auth/refresh`, `/api/v1/auth/me`).
+- [ ] Password hashing via Argon2id / Bcrypt in Python backend.
+- [ ] MongoDB Atlas user collection schema, indexing, and Motor async repository.
+- [ ] Cryptographically signed JWT access tokens (short-lived) and HTTP-only refresh tokens.
+- [ ] Backend role-based authorization middleware (RBAC).
+- [ ] Immediate account activation without email confirmation gate.
 
 ---
 

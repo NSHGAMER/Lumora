@@ -1,6 +1,30 @@
 export type SystemRole = 'student' | 'faculty' | 'admin';
 
-export type ActiveTab = 'home' | 'command' | 'academics' | 'jsr' | 'campus';
+export type ActiveTab =
+  | 'home'
+  | 'command'
+  | 'academics'
+  | 'jsr'
+  | 'campus'
+  | 'privacy'
+  | 'terms'
+  | 'cookie-preferences'
+  | '404'
+  | '403'
+  | '500'
+  | 'maintenance'
+  | 'login'
+  | 'register'
+  | 'forgot-password'
+  | 'reset-password'
+  | 'account';
+
+export interface CookiePreferences {
+  essential: true;
+  preferences: boolean;
+  analytics: boolean;
+  updatedAt?: string;
+}
 
 export interface JSRMessage {
   id: string;
