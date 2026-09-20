@@ -73,6 +73,16 @@
      - `/account` (`AccountSettingsView.tsx`): Profile metadata, in-session password change, active sessions indicator, theme switcher, and sign out.
    - **Navigation Integration:**
      - Integrated account console and sign-in shortcuts into Navbar role dropdown and Command Palette (`Cmd+K`).
+8. **Phase 2B.1 FastAPI Backend Foundation:**
+   - Modular backend architecture established in `backend/app/` (`api/v1/`, `core/`, `schemas/`, `services/`, `repositories/`, `dependencies/`).
+   - Centralized Pydantic Settings configuration with environment segregation (`development`, `testing`, `production`), zero hardcoded secrets, and safe `backend/.env.example` template.
+   - Strict explicit CORS allowlist with automated validation rejecting wildcards (`*`) in production.
+   - Standardized versioned API mounting at `/api/v1`.
+   - Health check endpoint (`GET /api/v1/health`) returning operational status, version, and environment telemetry.
+   - Root API info endpoint (`GET /api/v1`) returning public system identity and documentation routing.
+   - Structured error handling foundation adhering to RULE 11 (`RESOURCE_NOT_FOUND`, `VALIDATION_ERROR`, `INTERNAL_SERVER_ERROR`).
+   - Dependency management via `backend/requirements.txt` (FastAPI, Pydantic, Uvicorn, Pytest, HTTPX).
+   - Test suite in `backend/tests/` verified with 13 passing pytest tests (100% pass rate).
 
 ---
 
@@ -80,31 +90,28 @@
 - **Phase 0 — Foundation:** `Completed` (`Implemented` & `Tested`)
 - **Phase 1 — Public Experience & Resilience:** `Completed` (`Implemented` & `Tested`)
 - **Phase 2A — Authentication UI & Lifecycle Foundation:** `Completed` (`Implemented` & `Tested`)
-- **Phase 2B — FastAPI Backend + MongoDB Persistence + Real Authentication:** `Planned` (Next Phase)
+- **Phase 2B.1 — FastAPI Backend Foundation:** `Completed` (`Implemented` & `Tested`)
+- **Phase 2B.2 — MongoDB Atlas Persistence Layer:** `Planned` (Next Milestone)
+- **Phase 2B.3 — Real Authentication & JWT Security:** `Planned`
+- **Phase 2B.4 — Frontend Auth Integration:** `Planned`
 
 ---
 
 ## D. Current Active File
-- `src/App.tsx` (Wrapped in AuthProvider, routing all Phase 1 & 2A views)
+- `backend/app/main.py`
 
 ---
 
 ## E. Last Completed Task
-- Reconciled Phase 2B governance documentation: Phase 2B now owns the foundational FastAPI application, MongoDB Atlas authentication persistence, and real authentication contract; later phases extend domain APIs and data collections. No implementation code was changed.
-- The prior implementation milestone remains Phase 2A: authentication UI routes, AuthContext abstraction, ProtectedRoute gate, theme switcher, and role preview. It was verified with `oxlint` (0 errors, 0 warnings) and `npm run build` (success in 944ms).
+- Completed Phase 2B.1 FastAPI Backend Foundation: created production-grade modular backend, configuration loader, CORS allowlist with production wildcard prevention, health check (`GET /api/v1/health`), API info (`GET /api/v1`), structured error envelope, safe `.env.example`, and 13 passing pytest unit/integration tests. Verified frontend build and oxlint unaffected.
 
 ---
 
 ## F. Next Task
-- Phase 2B — FastAPI Backend + MongoDB Persistence + Real Authentication:
-  - Establish the foundational FastAPI application structure, CORS/security configuration, response envelope, and error handling.
-  - Set up MongoDB Atlas connection pooling plus initial `users` and `roles` schemas, indexes, and repositories.
-  - Implement `/api/v1/auth/register`, `/api/v1/auth/login`, `/api/v1/auth/refresh`, `/api/v1/auth/me`, and `/api/v1/auth/logout`.
-  - Require and validate a unique institutional identifier at registration: student ID for students, or an institution-issued faculty/staff/management/administrator identifier for other roles. Login accepts this identifier or institutional email.
-  - Hash passwords with Argon2id / Bcrypt; issue short-lived JWT access tokens and rotate HTTP-only refresh cookies.
-  - Implement backend RBAC for the canonical role model: `student`, `faculty`, `admin`, `management`, and `staff`.
-  - Connect frontend AuthContext to verified live FastAPI endpoints without changing the locked landing page.
-  - Preserve immediate activation after backend validation and database storage, with zero Supabase Auth, SMTP, email verification, confirmation emails, activation tokens, fake production JWTs, or client-side password storage.
+- Phase 2B.2 — MongoDB Atlas Persistence Layer:
+  - Setup MongoDB Atlas connection pooling abstraction with Motor async driver.
+  - Implement initial `users` and `roles` schemas, indexes, and repositories.
+  - Prepare data persistence layer for Phase 2B.3 authentication operations.
 
 ---
 
