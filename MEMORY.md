@@ -66,7 +66,7 @@
      - Theme Controller: Supports `dark` (primary default), `light`, and `system` modes without altering locked landing visual baseline.
    - **Authentication Views (`src/components/auth/`):**
      - `/login` (`LoginView.tsx`): Email/ID + password with visibility toggle, remember session, and quick demo profile preview.
-     - `/register` (`RegisterView.tsx`): Full name, institutional email, password strength meter, student/faculty role selector, and explicit immediate activation badge.
+     - `/register` (`RegisterView.tsx`): Full name, institutional email, password strength meter, student/faculty role selector, and explicit immediate activation badge. The institutional identifier required for real registration remains a Phase 2B backend contract.
      - **CRITICAL INVARIANTS PRESERVED:** NO email verification, NO verification email, NO confirmation email, NO SMTP dependency, NO "verify your email" screen.
      - `/forgot-password` (`ForgotPasswordView.tsx`): Institutional recovery protocol with zero SMTP dependency or fake email sends.
      - `/reset-password` (`ResetPasswordView.tsx`): Secure credential update UI with checklist criteria and immediate login routing.
@@ -80,7 +80,7 @@
 - **Phase 0 — Foundation:** `Completed` (`Implemented` & `Tested`)
 - **Phase 1 — Public Experience & Resilience:** `Completed` (`Implemented` & `Tested`)
 - **Phase 2A — Authentication UI & Lifecycle Foundation:** `Completed` (`Implemented` & `Tested`)
-- **Phase 2B — FastAPI Backend & MongoDB Persistence:** `Planned` (Next Phase)
+- **Phase 2B — FastAPI Backend + MongoDB Persistence + Real Authentication:** `Planned` (Next Phase)
 
 ---
 
@@ -90,18 +90,21 @@
 ---
 
 ## E. Last Completed Task
-- Implemented and verified Phase 2A: Authentication UI routes, AuthContext abstraction, ProtectedRoute gate, theme switcher, and role preview. Verified with `oxlint` (0 errors, 0 warnings) and `npm run build` (success in 944ms).
+- Reconciled Phase 2B governance documentation: Phase 2B now owns the foundational FastAPI application, MongoDB Atlas authentication persistence, and real authentication contract; later phases extend domain APIs and data collections. No implementation code was changed.
+- The prior implementation milestone remains Phase 2A: authentication UI routes, AuthContext abstraction, ProtectedRoute gate, theme switcher, and role preview. It was verified with `oxlint` (0 errors, 0 warnings) and `npm run build` (success in 944ms).
 
 ---
 
 ## F. Next Task
-- Phase 2B — FastAPI Backend & MongoDB Persistence:
-  - Setup FastAPI application structure and CORS/security configuration.
-  - Implement `/api/v1/auth/register` with Argon2id / Bcrypt password hashing.
-  - Implement `/api/v1/auth/login` issuing short-lived JWT access tokens and HTTP-only refresh cookies.
-  - Setup MongoDB Atlas connection pooling and User document schema.
-  - Connect frontend AuthContext to live FastAPI endpoints.
-  - Preserve core rule: Immediate account activation upon registration with zero SMTP/email verification.
+- Phase 2B — FastAPI Backend + MongoDB Persistence + Real Authentication:
+  - Establish the foundational FastAPI application structure, CORS/security configuration, response envelope, and error handling.
+  - Set up MongoDB Atlas connection pooling plus initial `users` and `roles` schemas, indexes, and repositories.
+  - Implement `/api/v1/auth/register`, `/api/v1/auth/login`, `/api/v1/auth/refresh`, `/api/v1/auth/me`, and `/api/v1/auth/logout`.
+  - Require and validate a unique institutional identifier at registration: student ID for students, or an institution-issued faculty/staff/management/administrator identifier for other roles. Login accepts this identifier or institutional email.
+  - Hash passwords with Argon2id / Bcrypt; issue short-lived JWT access tokens and rotate HTTP-only refresh cookies.
+  - Implement backend RBAC for the canonical role model: `student`, `faculty`, `admin`, `management`, and `staff`.
+  - Connect frontend AuthContext to verified live FastAPI endpoints without changing the locked landing page.
+  - Preserve immediate activation after backend validation and database storage, with zero Supabase Auth, SMTP, email verification, confirmation emails, activation tokens, fake production JWTs, or client-side password storage.
 
 ---
 
@@ -112,6 +115,9 @@
 4. **Password Recovery Invariant — No Silent SMTP:** Password recovery is documented as a planned feature. It will not depend silently on SMTP; future implementations will evaluate secure in-app authenticated password change, administrator-assisted reset, or university SSO/SAML recovery.
 5. **Data Integrity Guarantee:** Never expose fabricated institutional data as real data. When backend services or endpoints are not yet active, the interface must honestly state their pending status.
 6. **Zero Client Secrets:** Protected database credentials, signing keys, and external service tokens must never exist in frontend code.
+7. **Canonical Role Model:** Lumora recognizes `student`, `faculty`, `admin`, `management`, and `staff`. The backend maps these roles to explicit permissions and remains the authorization authority.
+8. **Institutional Identifier Contract:** Real registration requires a unique, backend-validated institutional identifier alongside the institutional email. The identifier is accepted for login and must never be fabricated by the client.
+9. **Authentication Session Contract:** Real authentication includes register, login, refresh, current-user (`/me`), and logout endpoints. Refresh tokens are HTTP-only and logout revokes the active refresh session.
 
 ---
 

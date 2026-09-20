@@ -82,8 +82,13 @@ src/
 │   ├── dashboard/      # Role-based Command Center, telemetry widgets
 │   ├── jsr/            # JSR Assistant modal, chat bubbles, agent visualizers
 │   ├── landing/        # Hero, Living Campus, Problem, Metrics, Showcase, Footer
+│   ├── auth/           # Authentication routes and account settings views
+│   ├── errors/         # Resilient error and maintenance views
+│   ├── legal/          # Privacy, terms, and cookie-preference views
 │   ├── navbar/         # Floating glass navigation, role selector, quick links
 │   └── ui/             # Command palette, buttons, badges, modals, skeletons
+├── auth/               # Auth context, storage abstraction, guards, and types
+├── hooks/              # Reusable client hooks
 ├── types/              # TypeScript interface and type definitions
 ├── App.tsx             # Root container with view router and global providers
 ├── index.css           # Core theme variables, glass utilities, Tailwind imports
@@ -97,7 +102,9 @@ src/
 
 ---
 
-## 4. Backend & API Architecture (Phase 4)
+## 4. Backend & API Architecture (Phase 2B Foundation)
+
+Phase 2B establishes the foundational FastAPI application, MongoDB Atlas persistence, and real authentication. Phase 4 extends this foundation with domain APIs; it does not recreate the application skeleton or authentication stack. Phase 5 extends the initial authentication data store with domain collections.
 
 ### 4.1 Modularity & Layered Pattern
 The FastAPI application follows a strict 3-tier structure:
@@ -114,12 +121,16 @@ The FastAPI application follows a strict 3-tier structure:
 
 ## 5. Authentication Architecture (Critical Specification)
 
-### 5.1 Registration Flow (Phase 2)
+### 5.1 Canonical Role Model
+
+Lumora recognizes exactly these RBAC roles throughout its frontend contracts, backend authorization, and persisted user records: `student`, `faculty`, `admin`, `management`, and `staff`. Roles are not permissions by themselves; the backend maps them to explicit permissions and enforces those permissions at API boundaries.
+
+### 5.2 Registration Flow (Phase 2B)
 The registration pipeline is intentionally streamlined and devoid of external email blockers:
 
 ```
 [User on Frontend]
-        │ Enters institutional ID / username, email, password, role
+        │ Enters full name, unique institutional identifier, email, password, role
         ▼
 [Frontend Validation]
         │ Form integrity, password strength criteria, required fields
@@ -154,15 +165,19 @@ The registration pipeline is intentionally streamlined and devoid of external em
 
 *Architectural Note:* The data model includes the `email` attribute for identity and institutional correspondence, but account state is set to active immediately upon account creation. When institutional email notifications or verification features are introduced in future phases, they will plug into this service without altering core registration logic.
 
-### 5.2 Login & Token Strategy
-- **Endpoint:** `POST /api/v1/auth/login`
+The institutional identifier is required at registration and is unique per user. It is the institution-issued student ID for students and the institution-issued faculty, staff, management, or administrator identifier for other roles. The backend normalizes and indexes it, and accepts it or the normalized institutional email as the login `identifier`. It must be issued or validated by the backend; the client must not fabricate it.
+
+### 5.3 Login, Session, and Token Strategy
+- **Endpoints:** `POST /api/v1/auth/login`, `POST /api/v1/auth/refresh`, `GET /api/v1/auth/me`, and `POST /api/v1/auth/logout`.
 - **Request:** `{ identifier: string, password: string }`
 - **Tokens Issued:**
   - **Access Token:** Short-lived JWT (15–30 minutes) carrying claims: `sub` (User ID), `role`, `permissions`.
   - **Refresh Token:** Long-lived token stored in HTTP-only, SameSite cookie or secure local vault.
 - **Logout:** `POST /api/v1/auth/logout` invalidates the active refresh token and purges client session state.
+- **Refresh:** `POST /api/v1/auth/refresh` validates and rotates the HTTP-only refresh token before issuing a renewed access token.
+- **Current User:** `GET /api/v1/auth/me` returns the canonical authenticated profile, role, and permissions for session restoration and authorization-aware UI.
 
-### 5.3 Password Recovery Strategy (Planned)
+### 5.4 Password Recovery Strategy (Planned)
 - **Status:** Planned feature.
 - **Constraint:** **Zero dependency on SMTP.**
 - **Approved Architectural Paths for Future Activation:**

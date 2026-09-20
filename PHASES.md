@@ -21,16 +21,19 @@ Phases are executed systematically. Future phases must not be implemented premat
 [Phase 1: Public Experience & Legal / UX] ──────► (COMPLETED / IMPLEMENTED & TESTED)
         │
         ▼
-[Phase 2: Authentication & User Lifecycle] ─────► (PLANNED)
+[Phase 2A: Authentication UI & Lifecycle Foundation] ► (COMPLETED / IMPLEMENTED & TESTED)
+        │
+        ▼
+[Phase 2B: FastAPI + MongoDB + Real Authentication] ► (PLANNED)
         │
         ▼
 [Phase 3: Core Campus Platform & Dashboards] ───► (PLANNED)
         │
         ▼
-[Phase 4: FastAPI Backend Architecture] ────────► (PLANNED)
+[Phase 4: Backend Domain API Expansion] ─────────► (PLANNED)
         │
         ▼
-[Phase 5: MongoDB Atlas Data Layer] ────────────► (PLANNED)
+[Phase 5: MongoDB Domain Data Layer] ────────────► (PLANNED)
         │
         ▼
 [Phase 6: JSR — The Intelligence Engine] ───────► (PLANNED)
@@ -112,12 +115,16 @@ Phases are executed systematically. Future phases must not be implemented premat
 
 ### PHASE 2B — FastAPI Backend Authentication & MongoDB Persistence
 **Status:** `Planned`
-- [ ] FastAPI authentication routers (`/api/v1/auth/register`, `/api/v1/auth/login`, `/api/v1/auth/refresh`, `/api/v1/auth/me`).
+- [ ] Establish the foundational FastAPI application structure (`api/`, `services/`, `repositories/`, `models/`, `core/`), Pydantic validation, CORS/security configuration, standardized response envelopes, and global exception handling.
+- [ ] Create authentication routers: `POST /api/v1/auth/register`, `POST /api/v1/auth/login`, `POST /api/v1/auth/refresh`, `GET /api/v1/auth/me`, and `POST /api/v1/auth/logout`.
 - [ ] Password hashing via Argon2id / Bcrypt in Python backend.
-- [ ] MongoDB Atlas user collection schema, indexing, and Motor async repository.
+- [ ] MongoDB Atlas connection pooling plus the initial `users` and `roles` collections, indexes, and Motor async repositories.
 - [ ] Cryptographically signed JWT access tokens (short-lived) and HTTP-only refresh tokens.
-- [ ] Backend role-based authorization middleware (RBAC).
+- [ ] Backend role-based authorization middleware (RBAC) for the canonical roles: `student`, `faculty`, `admin`, `management`, and `staff`.
+- [ ] Require a unique institutional identifier at registration (student ID or institution-issued faculty/staff/management/administrator identifier), alongside full name, institutional email, role, and password; allow login by institutional identifier or email.
 - [ ] Immediate account activation without email confirmation gate.
+- [ ] Preserve the authentication invariants: no Supabase Auth, SMTP, email verification, confirmation emails, activation tokens, fake production JWTs, or client-side password storage.
+- [ ] Connect the existing frontend auth foundation to verified live endpoints without redesigning the locked landing page.
 
 ---
 
@@ -136,11 +143,9 @@ Phases are executed systematically. Future phases must not be implemented premat
 
 ---
 
-### PHASE 4 — FastAPI Backend Architecture
+### PHASE 4 — Backend Domain API Expansion
 **Status:** `Planned`
-- [ ] FastAPI project structure (`api/`, `services/`, `repositories/`, `models/`, `core/`).
-- [ ] Pydantic v2 data models and validation schemas.
-- [ ] Authentication routers (`/api/v1/auth/*`).
+- [ ] Expand the Phase 2B FastAPI foundation with domain-specific Pydantic v2 schemas, services, repositories, and authorization policies.
 - [ ] Academic management endpoints (`/api/v1/academics/*`).
 - [ ] Campus facility endpoints (`/api/v1/campus/*`).
 - [ ] Administrative & User management endpoints (`/api/v1/users/*`).
@@ -149,12 +154,10 @@ Phases are executed systematically. Future phases must not be implemented premat
 
 ---
 
-### PHASE 5 — MongoDB Atlas Data Layer
+### PHASE 5 — MongoDB Domain Data Layer
 **Status:** `Planned`
-- [ ] MongoDB Atlas cluster provisioning and connection pooling.
-- [ ] Database schema design and collection indexing:
-  - `users`, `roles`, `courses`, `enrollments`, `schedules`, `facilities`, `ledgers`, `audit_logs`.
-- [ ] Motor async repository implementations.
+- [ ] Extend the Phase 2B MongoDB foundation with domain collections and indexes: `courses`, `enrollments`, `schedules`, `facilities`, `ledgers`, and `audit_logs`.
+- [ ] Implement Motor async repositories for domain data.
 - [ ] Strict data validation rules and migration scripts.
 
 ---
