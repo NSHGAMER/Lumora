@@ -218,7 +218,6 @@ def test_token_payload_contract() -> None:
     payload = TokenPayload(
         sub="usr_12345",
         role="faculty",
-        institutional_id="FAC-2026-001",
         iss="lumora",
         aud="lumora-client",
         exp=1790000000,

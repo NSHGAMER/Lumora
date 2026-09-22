@@ -8,11 +8,16 @@ Adheres to Lumora Phase 2B.3 security invariants:
 - Refresh tokens are hashed via SHA-256 before persistence
 """
 
+from datetime import datetime, timedelta, timezone
 import hashlib
 import logging
-from typing import Final
+import secrets
+from typing import Any, Final, Optional
 from argon2 import PasswordHasher
 from argon2.exceptions import InvalidHashError, VerificationError, VerifyMismatchError
+import jwt
+
+from app.core.config import Settings
 
 logger = logging.getLogger("lumora.security")
 
@@ -107,3 +112,53 @@ def hash_token(raw_token: str) -> str:
     if not raw_token or not raw_token.strip():
         raise ValueError("Token cannot be empty.")
     return hashlib.sha256(raw_token.strip().encode("utf-8")).hexdigest()
+
+
+def generate_refresh_token() -> str:
+    """Generate a cryptographically secure random refresh token.
+
+    Generates 48 bytes (384 bits) of high-entropy base64url data.
+    """
+    return secrets.token_urlsafe(48)
+
+
+def create_access_token(
+    subject: str,
+    role: str,
+    settings: Settings,
+    expires_delta: Optional[timedelta] = None,
+) -> str:
+    """Generate a cryptographically signed short-lived JWT access token.
+
+    Includes standard registered and authorization claims: sub, role, iss, aud, exp, iat.
+    SECURITY INVARIANT:
+    - Minimum necessary claims: role is retained for stateless downstream RBAC.
+    - Never include passwords, hashes, refresh tokens, profile info, or database internals in JWT.
+    """
+    now = datetime.now(timezone.utc)
+    if expires_delta is not None:
+        expire = now + expires_delta
+    else:
+        expire = now + timedelta(minutes=settings.jwt_access_token_expire_minutes)
+
+    payload: dict[str, Any] = {
+        "sub": str(subject),
+        "role": str(role),
+        "iss": settings.jwt_issuer,
+        "aud": settings.jwt_audience,
+        "exp": int(expire.timestamp()),
+        "iat": int(now.timestamp()),
+    }
+    return jwt.encode(payload, settings.jwt_secret_key, algorithm=settings.jwt_algorithm)
+
+
+def decode_access_token(token: str, settings: Settings) -> dict[str, Any]:
+    """Decode and validate a signed JWT access token against signature, expiry, issuer, and audience."""
+    return jwt.decode(
+        token,
+        settings.jwt_secret_key,
+        algorithms=[settings.jwt_algorithm],
+        issuer=settings.jwt_issuer,
+        audience=settings.jwt_audience,
+        options={"require": ["exp", "iat", "sub", "iss", "aud"]},
+    )

@@ -116,8 +116,7 @@ class TokenPayload(BaseModel):
     """Internal schema for decoded JWT access token claims."""
 
     sub: str = Field(description="Subject identifier (user ID)")
-    role: CanonicalRole = Field(description="User RBAC role")
-    institutional_id: str = Field(description="Unique institutional identifier")
+    role: CanonicalRole = Field(description="User RBAC role for stateless authorization")
     iss: str = Field(default="lumora", description="Token issuer")
     aud: str = Field(default="lumora-client", description="Token audience")
     exp: int = Field(description="UTC expiration Unix timestamp")

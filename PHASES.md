@@ -180,10 +180,21 @@ Phases are executed systematically. Future phases must not be implemented premat
 
 
 ##### Phase 2B.3-C — Login, Sessions, JWT & Refresh Tokens
-**Status:** `Planned`
-- [ ] Implement `POST /api/v1/auth/login`, `POST /api/v1/auth/refresh`, and `POST /api/v1/auth/logout`.
-- [ ] Cryptographically signed JWT access tokens (short-lived) and secure HttpOnly cookie refresh token transport.
-- [ ] Token fingerprint hashing and session tracking in MongoDB.
+**Status:** `Implemented` & `Tested`
+- [x] Implement `POST /api/v1/auth/login` endpoint delegating to `AuthService`.
+- [x] Dual-mode identifier lookup supporting institutional identifier (e.g. `STU-2026-001`) and institutional email with deterministic normalization.
+- [x] Constant-time Argon2id password verification via `SecurityService.verify_password`.
+- [x] Generic authentication failure handling (HTTP 401 Unauthorized: "Invalid institutional credentials") preventing account enumeration.
+- [x] Cryptographically signed short-lived JWT access tokens using centralized configuration and minimum necessary claims (`sub`, `role`, `iss`, `aud`, `exp`, `iat`). `role` is retained for stateless downstream RBAC; `institutional_id` is excluded.
+- [x] High-entropy refresh token generation delivered via secure `HttpOnly` cookie (`SameSite=lax`, `Path=/api/v1/auth`, `Secure=settings.is_production`).
+- [x] Session creation in MongoDB `sessions` collection persisting strictly SHA-256 token fingerprints (`token_hash`); raw refresh tokens are never persisted.
+- [x] Atomic update of `last_login_at` only upon successful authentication.
+- [x] Inactive accounts safely blocked from receiving tokens or sessions.
+- [x] Multi-device session support (each login generates a distinct session).
+- [x] Public `AuthResponse` model returning access token and sanitized user profile without sensitive credentials.
+- [x] Comprehensive test suite in `backend/tests/test_login.py` (91 total passing backend tests, 1 skipped).
+- [ ] Next: Phase 2B.3-D — Refresh Token Rotation, Session Revocation, Logout & Protected Endpoints.
+
 
 ##### Phase 2B.3-D — RBAC & Protected Endpoints
 **Status:** `Planned`

@@ -124,6 +124,16 @@
     - Maintained core invariant: account is immediately active (`is_active=True`, `last_login_at=None`) with zero SMTP, zero verification emails, and zero tokens issued at registration.
     - Created comprehensive test suite in `backend/tests/test_registration.py` with 77 total passing backend tests (100% pass rate).
 
+13. **Phase 2B.3-C Login, Sessions, JWT & Refresh Tokens:**
+    - Implemented `POST /api/v1/auth/login` returning HTTP 200 OK with access JWT and setting a secure HttpOnly refresh cookie.
+    - Implemented dedicated `AuthService` handling dual-mode lookup (institutional ID or email with deterministic normalization), Argon2id verification, active state check, access JWT creation, cryptographically secure refresh token generation, session persistence, and `last_login_at` timestamp updates.
+    - Enforced generic authentication failure message (`HTTP 401 Unauthorized: "Invalid institutional credentials"`) to strictly prevent user enumeration.
+    - Generated short-lived signed JWT access tokens adhering to the "Minimum Necessary Claims" principle: contains exactly (`sub`, `role`, `iss`, `aud`, `exp`, `iat`). `role` is retained for downstream stateless RBAC checks without a database lookup; `institutional_id` was removed as profile metadata delivered via `UserResponse`. Strictly excludes sensitive data, credentials, and database internals.
+    - Stored strictly SHA-256 digests (`token_hash`) in MongoDB `sessions` collection via `SessionRepository`; raw refresh tokens are never persisted or returned in JSON.
+    - Delivered raw refresh token via secure `HttpOnly` cookie (`SameSite=lax`, `Path=/api/v1/auth`, `Secure=settings.is_production`).
+    - Supported multi-device sessions without preemptively invalidating concurrent logins.
+    - Created comprehensive test suite in `backend/tests/test_login.py` (91 total passing backend tests, 1 skipped).
+
 ---
 
 ## C. Current Phase
@@ -135,28 +145,29 @@
 - **Phase 2B.3 — Real Authentication & JWT Security:** `In Progress`
   - **Phase 2B.3-A — Authentication Contracts + Password Security Foundation:** `Completed` (`Implemented` & `Tested`)
   - **Phase 2B.3-B — Registration Backend:** `Completed` (`Implemented` & `Tested`)
-  - **Phase 2B.3-C — Login, Sessions, JWT & Refresh Tokens:** `Planned` (Next Milestone)
-  - **Phase 2B.3-D — RBAC & Protected Endpoints:** `Planned`
+  - **Phase 2B.3-C — Login, Sessions, JWT & Refresh Tokens:** `Completed` (`Implemented` & `Tested`)
+  - **Phase 2B.3-D — Refresh Token Rotation, Session Revocation, Logout & RBAC:** `Planned` (Next Milestone)
 - **Phase 2B.4 — Frontend Auth Integration:** `Planned`
 
 ---
 
 ## D. Current Active File
-- `backend/app/api/v1/endpoints/auth.py`
+- `backend/app/services/auth_service.py`
 
 ---
 
 ## E. Last Completed Task
-- Completed Phase 2B.3-B: Registration Backend. Implemented `POST /api/v1/auth/register`, `RegistrationService`, centralized `PUBLIC_REGISTRATION_ROLES`, deterministic duplicate validation (409 Conflict), privileged role protection (403 Forbidden), Argon2id password hashing, immediate account activation, and 77 passing unit/API tests. Zero frontend changes, zero auto-login or session creation, zero secrets in source code.
+- Completed Phase 2B.3-C: Login, Sessions, JWT & Refresh Tokens. Implemented `POST /api/v1/auth/login`, `AuthService`, dual-identifier resolution, Argon2id verification, short-lived access JWT issuance, high-entropy refresh tokens transported via secure HttpOnly cookies, MongoDB session tracking storing strictly SHA-256 token digests, `last_login_at` atomic updates, and 90 passing pytest tests. Zero frontend changes, zero secrets in source code.
 
 ---
 
 ## F. Next Task
-- Phase 2B.3-C — Login, Sessions, JWT & Refresh Tokens:
-  - Implement `POST /api/v1/auth/login`, `POST /api/v1/auth/refresh`, and `POST /api/v1/auth/logout`.
-  - Issue cryptographically signed short-lived JWT access tokens and secure HttpOnly rotating refresh tokens.
-  - Store SHA-256 token fingerprints in MongoDB `sessions` collection via `SessionRepository`.
-  - Update `last_login_at` on successful authentication.
+- Phase 2B.3-D — Refresh Token Rotation, Session Revocation, Logout & RBAC:
+  - Implement `POST /api/v1/auth/refresh` with single-use rotating refresh tokens and reuse detection.
+  - Implement `POST /api/v1/auth/logout` revoking active refresh sessions and clearing the HttpOnly cookie.
+  - Implement `GET /api/v1/auth/me` returning the authenticated user profile.
+  - Enforce backend role-based access control (RBAC) middleware for canonical roles (`student`, `faculty`, `admin`, `management`, `staff`).
+
 
 
 
