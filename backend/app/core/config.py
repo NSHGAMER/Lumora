@@ -10,7 +10,7 @@ Adheres to 12-factor application principles and strict security invariants:
 from functools import lru_cache
 import json
 from typing import Any, Literal
-from pydantic import Field, field_validator
+from pydantic import AliasChoices, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -55,17 +55,32 @@ class Settings(BaseSettings):
     )
 
     # --------------------------------------------------------------------------
-    # Planned Phase 2B.2: MongoDB Atlas Persistence Placeholders
+    # Phase 2B.2: MongoDB Atlas Persistence Configuration
     # --------------------------------------------------------------------------
-    mongodb_uri: str = Field(
-        default="mongodb://localhost:27017",
+    mongodb_uri: str | None = Field(
+        default=None,
         alias="MONGODB_URI",
-        description="MongoDB connection string (placeholder for Phase 2B.2)",
+        description="MongoDB connection string (URI format)",
     )
-    mongodb_db_name: str = Field(
-        default="lumora_db",
-        alias="MONGODB_DB_NAME",
-        description="Target database name (placeholder for Phase 2B.2)",
+    mongodb_database: str = Field(
+        default="lumora",
+        validation_alias=AliasChoices("MONGODB_DATABASE", "MONGODB_DB_NAME"),
+        description="Target MongoDB database name",
+    )
+    mongodb_server_selection_timeout_ms: int = Field(
+        default=2500,
+        alias="MONGODB_TIMEOUT_MS",
+        description="Timeout in milliseconds for MongoDB server discovery and ping",
+    )
+    mongodb_min_pool_size: int = Field(
+        default=5,
+        alias="MONGODB_MIN_POOL_SIZE",
+        description="Minimum connection pool size for MongoDB",
+    )
+    mongodb_max_pool_size: int = Field(
+        default=50,
+        alias="MONGODB_MAX_POOL_SIZE",
+        description="Maximum connection pool size for MongoDB",
     )
 
     # --------------------------------------------------------------------------
@@ -138,6 +153,17 @@ class Settings(BaseSettings):
     def is_development(self) -> bool:
         """Check if running in development."""
         return self.environment == "development"
+
+    @property
+    def has_mongodb_configured(self) -> bool:
+        """Verify if a valid, non-placeholder MongoDB URI is provided."""
+        if not self.mongodb_uri:
+            return False
+        uri = self.mongodb_uri.strip()
+        if "<username>" in uri or "<password>" in uri or "<cluster>" in uri:
+            return False
+        return uri.startswith("mongodb://") or uri.startswith("mongodb+srv://")
+
 
 
 @lru_cache

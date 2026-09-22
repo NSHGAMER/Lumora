@@ -1,5 +1,3 @@
-"""FastAPI dependency injection utilities.
+from app.dependencies.database import get_database, get_user_repository
 
-Common dependencies (database session, current user, role guards) will be
-introduced in Phase 2B.2 and Phase 2B.3.
-"""
+__all__ = ["get_database", "get_user_repository"]

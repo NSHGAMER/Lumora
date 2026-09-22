@@ -27,7 +27,7 @@ Phases are executed systematically. Future phases must not be implemented premat
 [Phase 2B.1: FastAPI Backend Foundation] ──────► (COMPLETED / IMPLEMENTED & TESTED)
         │
         ▼
-[Phase 2B.2: MongoDB Atlas Persistence Layer] ──► (PLANNED)
+[Phase 2B.2: MongoDB Atlas Persistence Layer] ──► (COMPLETED / IMPLEMENTED & TESTED)
         │
         ▼
 [Phase 2B.3: Real Authentication & JWT Security] ► (PLANNED)
@@ -139,9 +139,17 @@ Phases are executed systematically. Future phases must not be implemented premat
 - [x] Comprehensive test suite in `backend/tests/` using pytest and TestClient (13 tests passing across health, info, config validation, production wildcard rejection, CORS headers, preflight options, and 404 structured envelope).
 
 #### Phase 2B.2 — MongoDB Atlas Persistence Layer
-**Status:** `Planned`
-- [ ] MongoDB Atlas connection pooling plus initial `users` and `roles` collections, indexes, and Motor async repositories.
-- [ ] Strict schema validation and document modeling.
+**Status:** `Implemented` & `Tested`
+- [x] Dedicated MongoDB Atlas persistence layer using the official modern async MongoDB Python driver (`pymongo.AsyncMongoClient`).
+- [x] Application-scoped connection lifecycle management with managed startup verification and shutdown closing.
+- [x] Truthful health inspection integrated into `/api/v1/health` reporting exact database connectivity state (`connected`, `unconfigured`, `disconnected`).
+- [x] Centralized environment configuration via `MONGODB_URI`, `MONGODB_DATABASE`, timeout, and pool size controls with safe `.env.example` placeholders.
+- [x] Canonical 5-role model specification (`student`, `faculty`, `admin`, `management`, `staff`) with strict Pydantic validation.
+- [x] Deterministic normalization contracts for `normalized_email` and `institutional_id`.
+- [x] Document schemas separating internal persistence (`UserDocument`), creation input (`UserCreateInternal`), and public API models (`UserResponse` strictly excluding `password_hash`).
+- [x] Stable, idempotent index creation for `users` (`idx_users_normalized_email_unique`, `idx_users_institutional_id_unique`, `idx_users_role`, `idx_users_created_at`) and future session collection blueprint.
+- [x] Decoupled `UserRepository` abstraction handling pure persistence operations (`get_by_id`, `get_by_email`, `get_by_institutional_id`, `get_by_identifier`, `create_user`, `update_last_login`, `count`).
+- [x] Comprehensive test suite in `backend/tests/` with 28 tests passing and development-safe offline fallbacks.
 
 #### Phase 2B.3 — Real Authentication & JWT Security
 **Status:** `Planned`

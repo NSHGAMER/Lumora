@@ -83,6 +83,15 @@
    - Structured error handling foundation adhering to RULE 11 (`RESOURCE_NOT_FOUND`, `VALIDATION_ERROR`, `INTERNAL_SERVER_ERROR`).
    - Dependency management via `backend/requirements.txt` (FastAPI, Pydantic, Uvicorn, Pytest, HTTPX).
    - Test suite in `backend/tests/` verified with 13 passing pytest tests (100% pass rate).
+9. **Phase 2B.2 MongoDB Atlas Persistence + Data Foundation:**
+   - Dedicated persistence layer implemented using official modern async MongoDB driver (`pymongo.AsyncMongoClient`).
+   - Single application-scoped connection pool lifecycle (`db_manager`) with startup index verification and clean shutdown.
+   - Centralized configuration with `MONGODB_URI`, `MONGODB_DATABASE`, timeouts, and connection pool sizing via environment variables.
+   - Truthful health reporting in `GET /api/v1/health` distinguishing `connected`, `unconfigured` (development-safe fallback), and `disconnected`.
+   - Users collection contract established with canonical 5-role model (`student`, `faculty`, `admin`, `management`, `staff`), deterministic normalization for email and institutional ID, and strict exclusion of `password_hash` from client-facing schemas (`UserResponse`).
+   - Idempotent index creation on startup with stable names (`idx_users_normalized_email_unique`, `idx_users_institutional_id_unique`, `idx_users_role`, `idx_users_created_at`) plus session collection blueprint.
+   - Pure persistence `UserRepository` abstraction (`get_by_id`, `get_by_email`, `get_by_institutional_id`, `get_by_identifier`, `create_user`, `update_last_login`, `count`) injected via dependencies.
+   - Full test coverage with 28 tests passing (100% pass rate) without requiring live production Atlas credentials.
 
 ---
 
@@ -91,27 +100,30 @@
 - **Phase 1 — Public Experience & Resilience:** `Completed` (`Implemented` & `Tested`)
 - **Phase 2A — Authentication UI & Lifecycle Foundation:** `Completed` (`Implemented` & `Tested`)
 - **Phase 2B.1 — FastAPI Backend Foundation:** `Completed` (`Implemented` & `Tested`)
-- **Phase 2B.2 — MongoDB Atlas Persistence Layer:** `Planned` (Next Milestone)
-- **Phase 2B.3 — Real Authentication & JWT Security:** `Planned`
+- **Phase 2B.2 — MongoDB Atlas Persistence Layer:** `Completed` (`Implemented` & `Tested`)
+- **Phase 2B.3 — Real Authentication & JWT Security:** `Planned` (Next Milestone)
 - **Phase 2B.4 — Frontend Auth Integration:** `Planned`
 
 ---
 
 ## D. Current Active File
-- `backend/app/main.py`
+- `backend/app/core/database.py`
 
 ---
 
 ## E. Last Completed Task
-- Completed Phase 2B.1 FastAPI Backend Foundation: created production-grade modular backend, configuration loader, CORS allowlist with production wildcard prevention, health check (`GET /api/v1/health`), API info (`GET /api/v1`), structured error envelope, safe `.env.example`, and 13 passing pytest unit/integration tests. Verified frontend build and oxlint unaffected.
+- Completed Phase 2B.2 MongoDB Atlas Persistence + Data Foundation: established application-scoped AsyncMongoClient pool, UserRepository, UserDocument and safe UserResponse schemas, deterministic normalization rules, idempotent index creation, and truthful database health inspection. Verified 28 pytest tests passing, oxlint 0 warnings/0 errors, and frontend build passing in 904ms.
 
 ---
 
 ## F. Next Task
-- Phase 2B.2 — MongoDB Atlas Persistence Layer:
-  - Setup MongoDB Atlas connection pooling abstraction with Motor async driver.
-  - Implement initial `users` and `roles` schemas, indexes, and repositories.
-  - Prepare data persistence layer for Phase 2B.3 authentication operations.
+- Phase 2B.3 — Real Authentication Backend:
+  - Implement `/api/v1/auth/register`, `/api/v1/auth/login`, `/api/v1/auth/refresh`, `/api/v1/auth/me`, and `/api/v1/auth/logout`.
+  - Argon2id / Bcrypt password hashing in Python backend.
+  - Short-lived JWT access tokens and HTTP-only rotated refresh tokens.
+  - Backend RBAC middleware for the canonical roles: `student`, `faculty`, `admin`, `management`, `staff`.
+  - Unique institutional identifier validation at registration; login accepting institutional identifier or email.
+  - Preserve zero SMTP, zero email confirmation, zero fake production JWTs.
 
 ---
 

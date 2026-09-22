@@ -18,6 +18,7 @@ from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from app.api.v1.router import api_v1_router
 from app.core.config import Settings, get_settings
+from app.core.database import db_manager
 from app.schemas.response import ErrorDetail, ErrorResponse
 
 logger = logging.getLogger("lumora.backend")
@@ -26,7 +27,7 @@ logger = logging.getLogger("lumora.backend")
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Application lifespan manager for graceful startup and shutdown."""
-    settings = get_settings()
+    settings = getattr(app.state, "settings", None) or get_settings()
     logger.info(
         "Initializing %s (v%s) in [%s] mode...",
         settings.app_name,
@@ -35,8 +36,13 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     )
     logger.info("CORS allowed origins: %s", settings.cors_origins)
 
+    # Initialize MongoDB Atlas connection pool and verify indexes
+    await db_manager.connect(settings)
+
     yield
 
+    # Clean shutdown: close MongoDB client pool
+    await db_manager.disconnect()
     logger.info("Shutting down %s gracefully...", settings.app_name)
 
 
@@ -54,6 +60,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         openapi_url="/openapi.json" if not settings.is_production or settings.debug else None,
         lifespan=lifespan,
     )
+    app.state.settings = settings
 
     # --------------------------------------------------------------------------
     # CORS Configuration (Strict Explicit Allowlist)

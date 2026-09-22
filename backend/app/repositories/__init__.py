@@ -1,5 +1,3 @@
-"""Data access and repository layer package.
+from app.repositories.user_repository import UserRepository
 
-MongoDB repositories (UserRepository, RoleRepository, etc.) will be
-introduced in Phase 2B.2 and subsequent phases.
-"""
+__all__ = ["UserRepository"]

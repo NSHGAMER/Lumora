@@ -23,4 +23,6 @@ def test_health_check_payload_structure(client: TestClient) -> None:
     # Verify timestamp is valid ISO format
     parsed_dt = datetime.fromisoformat(data["timestamp"])
     assert parsed_dt is not None
-    assert data["services"] == {"api": "operational"}
+    assert data["services"]["api"] == "operational"
+    assert "database" in data["services"]
+    assert data["services"]["database"] in ["connected", "unconfigured", "disconnected"]
