@@ -84,27 +84,37 @@ class Settings(BaseSettings):
     )
 
     # --------------------------------------------------------------------------
-    # Planned Phase 2B.3: Real Authentication & JWT Security Placeholders
+    # Phase 2B.3: Authentication & Token Security Configuration
     # --------------------------------------------------------------------------
     jwt_secret_key: str = Field(
-        default="lumora-insecure-dev-secret-key-change-in-production",
+        default="lumora-insecure-dev-secret-key-change-in-production-min-32-chars",
         alias="JWT_SECRET_KEY",
-        description="Signing secret for JWTs (placeholder for Phase 2B.3)",
+        description="Cryptographic signing secret for JWT tokens",
     )
     jwt_algorithm: str = Field(
         default="HS256",
         alias="JWT_ALGORITHM",
         description="Cryptographic algorithm for JWT signing",
     )
-    access_token_expire_minutes: int = Field(
+    jwt_access_token_expire_minutes: int = Field(
         default=15,
-        alias="ACCESS_TOKEN_EXPIRE_MINUTES",
+        validation_alias=AliasChoices("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", "ACCESS_TOKEN_EXPIRE_MINUTES"),
         description="Access token validity period in minutes",
     )
-    refresh_token_expire_days: int = Field(
+    jwt_refresh_token_expire_days: int = Field(
         default=7,
-        alias="REFRESH_TOKEN_EXPIRE_DAYS",
+        validation_alias=AliasChoices("JWT_REFRESH_TOKEN_EXPIRE_DAYS", "REFRESH_TOKEN_EXPIRE_DAYS"),
         description="Refresh token validity period in days",
+    )
+    jwt_issuer: str = Field(
+        default="lumora",
+        alias="JWT_ISSUER",
+        description="JWT issuer (iss) claim",
+    )
+    jwt_audience: str = Field(
+        default="lumora-client",
+        alias="JWT_AUDIENCE",
+        description="JWT audience (aud) claim",
     )
 
     @field_validator("cors_origins", mode="before")
@@ -138,6 +148,25 @@ class Settings(BaseSettings):
             if not origins:
                 raise ValueError("Production mode requires at least one explicit allowed origin in CORS_ORIGINS.")
         return origins
+
+    @field_validator("jwt_secret_key")
+    @classmethod
+    def validate_jwt_secret_key(cls, v: str, info: Any) -> str:
+        """Enforce production requirement that JWT secret is strong and not a placeholder."""
+        data = info.data
+        env = data.get("environment")
+        if env == "production":
+            placeholder_markers = ["placeholder", "change-in-production", "insecure", "<", ">", "secret"]
+            v_lower = v.lower()
+            if any(marker in v_lower for marker in placeholder_markers):
+                raise ValueError(
+                    "In production mode, JWT_SECRET_KEY cannot contain default or placeholder values."
+                )
+            if len(v) < 32:
+                raise ValueError(
+                    "In production mode, JWT_SECRET_KEY must be at least 32 characters long."
+                )
+        return v
 
     @property
     def is_production(self) -> bool:

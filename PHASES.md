@@ -152,14 +152,38 @@ Phases are executed systematically. Future phases must not be implemented premat
 - [x] Comprehensive test suite in `backend/tests/` with 28 tests passing and development-safe offline fallbacks.
 
 #### Phase 2B.3 — Real Authentication & JWT Security
+**Status:** `In Progress`
+
+##### Phase 2B.3-A — Authentication Contracts + Password Security Foundation
+**Status:** `Implemented` & `Tested`
+- [x] Dedicated password security service using Argon2id (`argon2-cffi`) with safe hashing, constant-time verification, and rehash checks.
+- [x] Centralized password policy contract (`PASSWORD_MIN_LENGTH=8`, `PASSWORD_MAX_LENGTH=128`, length and boundary checks).
+- [x] Typed authentication schemas (`RegisterRequest`, `LoginRequest`, `RefreshTokenRequest`, `TokenPayload`, `AuthResponse`).
+- [x] Safe public response schemas strictly excluding `password`, `password_hash`, and raw `refresh_token` or `token_hash`.
+- [x] Session data contracts (`SessionDocument`, `SessionCreateInternal`, `SessionResponse`) storing only SHA-256 token fingerprints.
+- [x] Pure persistence `SessionRepository` abstraction for MongoDB `sessions` collection (`create_session`, `get_by_token_hash`, `get_active_sessions_for_user`, `revoke_session`, `revoke_all_for_user`, `delete_expired_sessions`, `count_active`).
+- [x] Centralized JWT/token configuration in `Settings` (`JWT_SECRET_KEY`, `JWT_ALGORITHM`, `JWT_ACCESS_TOKEN_EXPIRE_MINUTES`, `JWT_REFRESH_TOKEN_EXPIRE_DAYS`, `JWT_ISSUER`, `JWT_AUDIENCE`) with automated production validation rejecting default/placeholder secrets.
+- [x] Safe `.env.example` placeholders without embedded secrets.
+- [x] Comprehensive security and contract test suite in `backend/tests/test_security.py` (59 unit/contract tests passing).
+
+##### Phase 2B.3-B — Registration Backend
+**Status:** `Planned` (Next Milestone)
+- [ ] Implement `POST /api/v1/auth/register` endpoint.
+- [ ] Enforce institutional identifier uniqueness and email uniqueness via `UserRepository`.
+- [ ] Argon2id password hashing prior to persistence.
+- [ ] Immediate account activation without SMTP/email confirmation.
+
+##### Phase 2B.3-C — Login, Sessions, JWT & Refresh Tokens
 **Status:** `Planned`
-- [ ] Authentication routers: `POST /api/v1/auth/register`, `POST /api/v1/auth/login`, `POST /api/v1/auth/refresh`, `GET /api/v1/auth/me`, and `POST /api/v1/auth/logout`.
-- [ ] Password hashing via Argon2id / Bcrypt in Python backend.
-- [ ] Cryptographically signed JWT access tokens (short-lived) and HTTP-only refresh tokens.
-- [ ] Backend role-based authorization middleware (RBAC) for the canonical roles: `student`, `faculty`, `admin`, `management`, and `staff`.
-- [ ] Require a unique institutional identifier at registration (student ID or institution-issued faculty/staff/management/administrator identifier), alongside full name, institutional email, role, and password; allow login by institutional identifier or email.
-- [ ] Immediate account activation without email confirmation gate.
-- [ ] Preserve authentication invariants: no Supabase Auth, SMTP, email verification, confirmation emails, activation tokens, fake production JWTs, or client-side password storage.
+- [ ] Implement `POST /api/v1/auth/login`, `POST /api/v1/auth/refresh`, and `POST /api/v1/auth/logout`.
+- [ ] Cryptographically signed JWT access tokens (short-lived) and secure HttpOnly cookie refresh token transport.
+- [ ] Token fingerprint hashing and session tracking in MongoDB.
+
+##### Phase 2B.3-D — RBAC & Protected Endpoints
+**Status:** `Planned`
+- [ ] Implement `GET /api/v1/auth/me`.
+- [ ] Backend role-based authorization dependencies/middleware (RBAC) for canonical roles: `student`, `faculty`, `admin`, `management`, `staff`.
+
 
 #### Phase 2B.4 — Frontend API Integration
 **Status:** `Planned`

@@ -104,6 +104,16 @@
     - Strengthened secondary CTA affordance (`variant="glow"`) in `MagneticButton.tsx` and marked decorative icons `aria-hidden="true"`.
     - Preserved locked visual baseline, 3D Canvas, and header composition without touching backend or auth.
     - Verified with oxlint (0 errors, 0 warnings), npm run build (built cleanly in 3.67s), pytest (28 tests passing, 100%), and git diff --check (clean).
+11. **Phase 2B.3-A Authentication Contracts + Password Security Foundation:**
+    - Established dedicated password security foundation in `backend/app/core/security.py` using Argon2id (`argon2-cffi`) with constant-time verification, rehash checks, and SHA-256 token hashing (`hash_token`).
+    - Created centralized password policy contract (`PASSWORD_MIN_LENGTH=8`, `PASSWORD_MAX_LENGTH=128`, rejection of empty/whitespace).
+    - Designed typed authentication request contracts in `backend/app/schemas/auth.py` (`RegisterRequest`, `LoginRequest`, `RefreshTokenRequest`, `TokenPayload`, `AuthResponse`).
+    - Enforced strict credential isolation: `password_hash`, `token_hash`, and plaintext passwords are never included in API responses (`UserResponse`, `SessionResponse`, `AuthResponse`).
+    - Defined session data contracts in `backend/app/schemas/session.py` (`SessionDocument`, `SessionCreateInternal`, `SessionResponse`) persisting only SHA-256 token fingerprints.
+    - Implemented pure persistence `SessionRepository` abstraction in `backend/app/repositories/session_repository.py` backed by MongoDB `sessions` collection.
+    - Configured centralized token security settings in `backend/app/core/config.py` (`jwt_secret_key`, `jwt_algorithm`, `jwt_access_token_expire_minutes`, `jwt_refresh_token_expire_days`, `jwt_issuer`, `jwt_audience`) with automated production validation rejecting default/placeholder secrets.
+    - Updated `backend/.env.example` with safe, placeholder-only configuration templates.
+    - Created comprehensive test suite in `backend/tests/test_security.py` with 59 passing unit/contract tests (100% pass rate).
 
 ---
 
@@ -113,29 +123,33 @@
 - **Phase 2A — Authentication UI & Lifecycle Foundation:** `Completed` (`Implemented` & `Tested`)
 - **Phase 2B.1 — FastAPI Backend Foundation:** `Completed` (`Implemented` & `Tested`)
 - **Phase 2B.2 — MongoDB Atlas Persistence Layer:** `Completed` (`Implemented` & `Tested`)
-- **Phase 2B.3 — Real Authentication & JWT Security:** `Planned` (Next Milestone)
+- **Phase 2B.3 — Real Authentication & JWT Security:** `In Progress`
+  - **Phase 2B.3-A — Authentication Contracts + Password Security Foundation:** `Completed` (`Implemented` & `Tested`)
+  - **Phase 2B.3-B — Registration Backend:** `Planned` (Next Milestone)
+  - **Phase 2B.3-C — Login, Sessions, JWT & Refresh Tokens:** `Planned`
+  - **Phase 2B.3-D — RBAC & Protected Endpoints:** `Planned`
 - **Phase 2B.4 — Frontend Auth Integration:** `Planned`
 
 ---
 
 ## D. Current Active File
-- `src/components/navbar/Navbar.tsx`
+- `backend/app/core/security.py`
 
 ---
 
 ## E. Last Completed Task
-- Completed Usability + Accessibility Refinement Pass addressing 19 audit findings: minimal accessibility refinements, contrast upgrade, type-scale consolidation, footer affordances, keyboard hint interactive targets, ARIA dialog roles, and card rhythm alignment without altering locked Lumora visual identity or touching backend/auth. Verified oxlint (0/0), npm run build (clean), pytest (28 passing), git diff --check (clean).
+- Completed Phase 2B.3-A: Authentication Contracts + Password Security Foundation. Implemented Argon2id password security service, centralized password policy, Pydantic auth schemas, session persistence schemas and repository, centralized JWT configuration with production validation, safe .env.example placeholders, and 59 passing pytest tests. Zero frontend changes, zero route implementations yet, zero secrets in source code.
 
 ---
 
 ## F. Next Task
-- Phase 2B.3 — Real Authentication Backend:
-  - Implement `/api/v1/auth/register`, `/api/v1/auth/login`, `/api/v1/auth/refresh`, `/api/v1/auth/me`, and `/api/v1/auth/logout`.
-  - Argon2id / Bcrypt password hashing in Python backend.
-  - Short-lived JWT access tokens and HTTP-only rotated refresh tokens.
-  - Backend RBAC middleware for the canonical roles: `student`, `faculty`, `admin`, `management`, `staff`.
-  - Unique institutional identifier validation at registration; login accepting institutional identifier or email.
-  - Preserve zero SMTP, zero email confirmation, zero fake production JWTs.
+- Phase 2B.3-B — Registration Backend:
+  - Implement `POST /api/v1/auth/register` route.
+  - Enforce institutional identifier and email uniqueness validation via `UserRepository`.
+  - Argon2id password hashing before persistence.
+  - Immediate account activation invariant (zero SMTP, zero verification emails).
+  - Return safe `AuthResponse` or `UserResponse`.
+
 
 ---
 
