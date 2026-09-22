@@ -89,4 +89,12 @@ export const authApi = {
       setAccessToken(null);
     }
   },
+
+  /**
+   * Fetch currently authenticated user profile from /api/v1/auth/me.
+   * Requires active Bearer access token in memory.
+   */
+  async me(): Promise<BackendUser> {
+    return apiFetch<BackendUser>('/api/v1/auth/me');
+  },
 };

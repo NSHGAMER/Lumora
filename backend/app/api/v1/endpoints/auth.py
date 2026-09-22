@@ -9,7 +9,11 @@ Phase 2B.3-B Implementation:
 from typing import Optional
 from fastapi import APIRouter, Body, Depends, Request, Response, status
 
-from app.dependencies.auth import get_auth_service, get_registration_service
+from app.dependencies.auth import (
+    get_auth_service,
+    get_current_user,
+    get_registration_service,
+)
 from app.schemas.auth import (
     AuthResponse,
     LoginRequest,
@@ -18,7 +22,7 @@ from app.schemas.auth import (
     RegisterRequest,
 )
 from app.schemas.response import ErrorResponse
-from app.schemas.user import UserResponse
+from app.schemas.user import UserDocument, UserResponse
 from app.services.auth_service import AuthService
 from app.services.registration_service import RegistrationService
 
@@ -171,3 +175,41 @@ async def logout_user(
     result = await auth_service.logout(raw_refresh_token=raw_token)
     auth_service.clear_refresh_cookie(response)
     return result
+
+
+@router.get(
+    "/me",
+    status_code=status.HTTP_200_OK,
+    response_model=UserResponse,
+    summary="Get current authenticated user profile",
+    description=(
+        "Retrieves the public institutional profile of the currently authenticated user "
+        "identified by the Bearer access token provided in the Authorization header. "
+        "Excludes sensitive credentials and database internals."
+    ),
+    responses={
+        status.HTTP_200_OK: {
+            "model": UserResponse,
+            "description": "Profile of the authenticated user.",
+        },
+        status.HTTP_401_UNAUTHORIZED: {
+            "model": ErrorResponse,
+            "description": "Missing, expired, or invalid Bearer access token, or inactive account.",
+        },
+    },
+)
+async def get_current_user_profile(
+    current_user: UserDocument = Depends(get_current_user),
+) -> UserResponse:
+    """Return public profile of the currently authenticated user."""
+    return UserResponse(
+        id=current_user.id or "",
+        institutional_id=current_user.institutional_id,
+        institutional_email=current_user.institutional_email,
+        full_name=current_user.full_name,
+        role=current_user.role,
+        is_active=current_user.is_active,
+        created_at=current_user.created_at,
+        updated_at=current_user.updated_at,
+        last_login_at=current_user.last_login_at,
+    )

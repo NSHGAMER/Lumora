@@ -161,17 +161,18 @@
   - **Phase 2B.3-C — Login, Sessions, JWT & Refresh Tokens:** `Completed` (`Implemented` & `Tested`)
   - **Phase 2B.3-D — Refresh Token Rotation, Session Revocation, Logout:** `Completed` (`Implemented` & `Tested`)
   - **Phase 2B.3-E — Real Frontend Authentication Integration:** `Completed` (`Implemented` & `Tested`)
+- **Phase 2B.4 — Backend Authorization & Current User Foundation:** `Completed` (`Implemented` & `Tested`)
 - **Phase 3 — Core Campus Platform & Dashboards:** `Planned`
 
 ---
 
 ## D. Current Active File
-- `src/auth/AuthContext.tsx`
+- `backend/app/api/v1/endpoints/auth.py`
 
 ---
 
 ## E. Last Completed Task
-- Completed Phase 2B.3-E: Real Frontend Authentication Integration. Connected existing frontend auth UI to FastAPI backend (`/api/v1/auth/register`, `/login`, `/refresh`, `/logout`). Implemented centralized typed API client (`src/api/`) with memory-only access token storage, HttpOnly refresh cookie exchange (`credentials: "include"`), automatic startup session restoration, single-refresh concurrency lock on 401 with one-time retry, registration without auto-login (redirecting to `/login`), sanitized generic 401 handling, protected route integration, and full 5-role canonical RBAC support in TypeScript. Zero visual changes made to locked landing page or UI components.
+- Completed Phase 2B.4: Backend Authorization & Current User Foundation. Implemented `GET /api/v1/auth/me` returning sanitized public `UserResponse`. Created reusable `get_current_user` and `get_current_active_user` FastAPI dependencies with Bearer access token verification and in-database user validation. Created reusable `require_role` and `require_roles` RBAC dependencies with `RoleChecker` enforcing canonical roles (`student`, `faculty`, `admin`, `management`, `staff`) against authoritative MongoDB records (preventing client role spoofing). Generic HTTP 401 on authentication failures and HTTP 403 on insufficient permissions. Extended typed frontend client with `authApi.me()`. 139 passed backend tests (31 new tests), frontend lint and build 100% clean.
 
 ---
 

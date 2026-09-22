@@ -223,6 +223,17 @@ Phases are executed systematically. Future phases must not be implemented premat
 - [x] Protected routes (`ProtectedRoute.tsx`) connected to real `AuthContext` with skeleton loading and security boundary challenge card.
 - [x] Zero visual redesign: locked landing page, 3D CampusCanvas, Hero, Navbar, footer, and styling system 100% preserved.
 
+#### Phase 2B.4 — Backend Authorization & Current User Foundation
+**Status:** `Implemented` & `Tested`
+- [x] Implement `GET /api/v1/auth/me` returning sanitized public `UserResponse` for active authenticated user.
+- [x] Reusable `get_current_user` and `get_current_active_user` dependencies validating Bearer access JWTs, extracting `sub`, and resolving active user documents from MongoDB.
+- [x] Enforce authoritative token claims verification: signature, expiry, issuer (`lumora`), audience (`lumora-client`), and required claims.
+- [x] Generic HTTP 401 Unauthorized for unauthenticated, missing, malformed, expired, invalid tokens, or nonexistent/inactive accounts.
+- [x] Reusable RBAC authorization dependencies: `require_role(role)` and `require_roles(*roles)` with `RoleChecker` validating against canonical roles (`student`, `faculty`, `admin`, `management`, `staff`).
+- [x] In-database authoritative role verification: prevents client-side JWT role spoofing; unauthorized authenticated users receive HTTP 403 Forbidden.
+- [x] Frontend `authApi.me()` typed API method added without modifying visual systems or landing pages.
+- [x] Comprehensive test suite in `backend/tests/test_auth_me_rbac.py` (31 new tests, 139 total passed backend tests).
+
 ---
 
 ### PHASE 3 — Core Campus Platform & Dashboards
