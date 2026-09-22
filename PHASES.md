@@ -234,6 +234,30 @@ Phases are executed systematically. Future phases must not be implemented premat
 - [x] Frontend `authApi.me()` typed API method added without modifying visual systems or landing pages.
 - [x] Comprehensive test suite in `backend/tests/test_auth_me_rbac.py` (31 new tests, 139 total passed backend tests).
 
+#### Phase 2B.5 — Domain Architecture Foundation
+**Status:** `Implemented` & `Tested`
+- [x] Reusable domain module architecture pattern: `Router -> Auth/RBAC Dependency -> Domain Service -> Repository -> MongoDB Atlas`.
+- [x] Smallest real domain: Campus Directory foundation (`directory_profiles` collection).
+- [x] Reuses authenticated `UserDocument` in `users` collection without duplicating identity.
+- [x] Campus profile model: `department`, `title`, `office_location`, `phone_extension`, `bio`, timestamps.
+- [x] Typed schemas: `DirectoryProfileDocument`, `DirectoryProfileUpdate`, `DirectoryEntryResponse`, `DirectoryListResponse`.
+- [x] Repository layer: `DirectoryRepository` providing query and upsert operations for `directory_profiles` with zero HTTP or auth logic.
+- [x] Service layer: `DirectoryService` coordinating between `DirectoryRepository` and `UserRepository` with domain rules, search, pagination, and RBAC boundary enforcement.
+- [x] API endpoints:
+  - `GET /api/v1/directory` (browse/search active members, query text, role filter, department filter, pagination)
+  - `GET /api/v1/directory/departments` (list distinct campus departments)
+  - `GET /api/v1/directory/me` (current authenticated user directory entry)
+  - `PUT /api/v1/directory/me` (self-update directory profile)
+  - `GET /api/v1/directory/{user_id}` (target user directory entry)
+  - `PUT /api/v1/directory/{user_id}` (administrative update restricted to `admin` and `management`)
+- [x] Access boundaries:
+  - Unauthenticated requests receive 401 Unauthorized.
+  - Non-admin/management updating another profile receives 403 Forbidden.
+  - Security internals (`password_hash`, tokens, session IDs) strictly excluded from all public directory responses.
+- [x] Idempotent MongoDB indexes: `idx_directory_user_id_unique` and `idx_directory_department`.
+- [x] Frontend typed API client: `src/api/directory.ts` with `directoryApi` and types.
+- [x] Backend test suite: 14 new tests in `backend/tests/test_directory.py` (153 total passed backend tests, 1 skipped).
+
 ---
 
 ### PHASE 3 — Core Campus Platform & Dashboards

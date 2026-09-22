@@ -100,10 +100,20 @@ async def test_database_connected_lifecycle_mocked() -> None:
     mock_db = MagicMock()
     mock_users_col = MagicMock()
     mock_sessions_col = MagicMock()
+    mock_directory_col = MagicMock()
 
     mock_users_col.create_indexes = AsyncMock(return_value=["idx1", "idx2"])
     mock_sessions_col.create_indexes = AsyncMock(return_value=["sidx1"])
-    mock_db.__getitem__.side_effect = lambda name: mock_users_col if name == "users" else mock_sessions_col
+    mock_directory_col.create_indexes = AsyncMock(return_value=["didx1"])
+
+    def _col_picker(name: str) -> MagicMock:
+        if name == "users":
+            return mock_users_col
+        if name == "sessions":
+            return mock_sessions_col
+        return mock_directory_col
+
+    mock_db.__getitem__.side_effect = _col_picker
     mock_client.__getitem__.return_value = mock_db
     mock_client.admin.command = AsyncMock(return_value={"ok": 1})
     mock_client.close = AsyncMock()
@@ -121,6 +131,7 @@ async def test_database_connected_lifecycle_mocked() -> None:
         # Verify indexes were ensured
         mock_users_col.create_indexes.assert_awaited_once()
         mock_sessions_col.create_indexes.assert_awaited_once()
+        mock_directory_col.create_indexes.assert_awaited_once()
 
         # Check health report
         health = manager.get_health_status()

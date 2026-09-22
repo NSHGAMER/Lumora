@@ -4,6 +4,7 @@ from fastapi import Depends, HTTPException, status
 from pymongo.asynchronous.database import AsyncDatabase
 
 from app.core.database import db_manager
+from app.repositories.directory_repository import DirectoryRepository
 from app.repositories.session_repository import SessionRepository
 from app.repositories.user_repository import UserRepository
 
@@ -38,3 +39,14 @@ def get_session_repository() -> SessionRepository:
         )
     sessions_col = db_manager.get_collection("sessions")
     return SessionRepository(sessions_col)
+
+
+def get_directory_repository() -> DirectoryRepository:
+    """Provide DirectoryRepository instance backed by the application's active directory_profiles collection."""
+    if not db_manager.is_connected or db_manager.database is None:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Database persistence service is currently unavailable or unconfigured.",
+        )
+    directory_col = db_manager.get_collection("directory_profiles")
+    return DirectoryRepository(directory_col)

@@ -57,6 +57,18 @@ SESSION_INDEXES = [
     ),
 ]
 
+DIRECTORY_INDEXES = [
+    IndexModel(
+        [("user_id", ASCENDING)],
+        unique=True,
+        name="idx_directory_user_id_unique",
+    ),
+    IndexModel(
+        [("department", ASCENDING)],
+        name="idx_directory_department",
+    ),
+]
+
 
 class DatabaseManager:
     """Manages the application-scoped MongoDB client, connection pool, and collection access."""
@@ -171,6 +183,10 @@ class DatabaseManager:
             sessions_col: AsyncCollection = self._database["sessions"]
             await sessions_col.create_indexes(SESSION_INDEXES)
             logger.info("Ensured %d indexes on 'sessions' collection.", len(SESSION_INDEXES))
+
+            directory_col: AsyncCollection = self._database["directory_profiles"]
+            await directory_col.create_indexes(DIRECTORY_INDEXES)
+            logger.info("Ensured %d indexes on 'directory_profiles' collection.", len(DIRECTORY_INDEXES))
         except Exception as exc:
             logger.error("Failed to ensure collection indexes: %s", exc)
             raise

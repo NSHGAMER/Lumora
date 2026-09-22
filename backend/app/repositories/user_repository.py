@@ -7,6 +7,7 @@ Adheres to:
 """
 
 from datetime import datetime, timezone
+import re
 from typing import Any, Optional
 from bson import ObjectId
 from pymongo.asynchronous.collection import AsyncCollection
@@ -89,3 +90,48 @@ class UserRepository:
     async def count(self) -> int:
         """Count total user documents in collection."""
         return await self.collection.count_documents({})
+
+    async def list_active_users(
+        self,
+        role: Optional[str] = None,
+        query_text: Optional[str] = None,
+        user_ids: Optional[list[str]] = None,
+        exclude_user_ids: Optional[list[str]] = None,
+        skip: int = 0,
+        limit: int = 20,
+    ) -> tuple[list[UserDocument], int]:
+        """Query active users with optional role, text search, and ID filtering."""
+        filter_doc: dict[str, Any] = {"is_active": True}
+
+        if role:
+            filter_doc["role"] = role
+
+        if user_ids is not None:
+            id_filters: list[Any] = []
+            for uid in user_ids:
+                if ObjectId.is_valid(uid):
+                    id_filters.append(ObjectId(uid))
+                id_filters.append(str(uid))
+            filter_doc["_id"] = {"$in": id_filters}
+
+        if exclude_user_ids:
+            exclude_filters: list[Any] = []
+            for uid in exclude_user_ids:
+                if ObjectId.is_valid(uid):
+                    exclude_filters.append(ObjectId(uid))
+                exclude_filters.append(str(uid))
+            filter_doc["_id"] = {"$nin": exclude_filters}
+
+        if query_text:
+            cleaned = query_text.strip()
+            escaped = re.escape(cleaned)
+            filter_doc["$or"] = [
+                {"full_name": {"$regex": escaped, "$options": "i"}},
+                {"institutional_id": {"$regex": escaped, "$options": "i"}},
+                {"normalized_email": {"$regex": escaped.lower(), "$options": "i"}},
+            ]
+
+        total = await self.collection.count_documents(filter_doc)
+        cursor = self.collection.find(filter_doc).skip(skip).limit(limit).sort("full_name", 1)
+        docs = await cursor.to_list(length=limit)
+        return [self._document_to_schema(d) for d in docs], total

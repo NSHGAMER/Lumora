@@ -147,6 +147,29 @@
     - Verified zero frontend modifications (`src/*` untouched).
     - Comprehensive test suite in `backend/tests/test_refresh_logout.py` (108 total passing backend tests, 1 skipped).
 
+11. **Phase 2B.5 Domain Architecture Foundation (Campus Directory):**
+    - Established canonical reusable domain architecture pattern: `Router -> Auth/RBAC Dependency -> Domain Service -> Repository -> MongoDB Atlas`.
+    - Implemented smallest real domain: Campus Directory foundation (`directory_profiles` collection in MongoDB).
+    - Reused authenticated `UserDocument` in `users` collection without duplicating base identity.
+    - Stored campus-specific profile data (`department`, `title`, `office_location`, `phone_extension`, `bio`, timestamps) with default `"General Campus"`.
+    - Typed Pydantic schemas: `DirectoryProfileDocument`, `DirectoryProfileUpdate`, `DirectoryEntryResponse`, `DirectoryListResponse`.
+    - Pure persistence repository: `DirectoryRepository` managing `directory_profiles` with zero HTTP or auth logic.
+    - Domain service: `DirectoryService` coordinating between `DirectoryRepository` and `UserRepository` with query text search, role filtering, department filtering, pagination, self-edit logic, and administrative edit permissions.
+    - FastAPI endpoints mounted at `/api/v1/directory`:
+      - `GET /api/v1/directory`: Search/browse active directory members (query, role, department, page, page_size).
+      - `GET /api/v1/directory/departments`: List distinct campus departments.
+      - `GET /api/v1/directory/me`: Current user's directory entry.
+      - `PUT /api/v1/directory/me`: Update own profile (any active user).
+      - `GET /api/v1/directory/{user_id}`: Profile by target user ID.
+      - `PUT /api/v1/directory/{user_id}`: Administrative update restricted to `admin` and `management`.
+    - Access boundaries enforced:
+      - Unauthenticated requests receive HTTP 401 Unauthorized.
+      - Unauthorized roles attempting administrative updates receive HTTP 403 Forbidden.
+      - Security internals (`password_hash`, tokens, session IDs) strictly excluded across all responses.
+    - Idempotent MongoDB indexes: `idx_directory_user_id_unique` and `idx_directory_department`.
+    - Extended typed frontend client with `src/api/directory.ts` (`directoryApi`) and types.
+    - Comprehensive test suite in `backend/tests/test_directory.py` (14 new tests, 153 total passed backend tests, 1 skipped).
+
 ---
 
 ## C. Current Phase
@@ -162,17 +185,18 @@
   - **Phase 2B.3-D — Refresh Token Rotation, Session Revocation, Logout:** `Completed` (`Implemented` & `Tested`)
   - **Phase 2B.3-E — Real Frontend Authentication Integration:** `Completed` (`Implemented` & `Tested`)
 - **Phase 2B.4 — Backend Authorization & Current User Foundation:** `Completed` (`Implemented` & `Tested`)
+- **Phase 2B.5 — Domain Architecture Foundation:** `Completed` (`Implemented` & `Tested`)
 - **Phase 3 — Core Campus Platform & Dashboards:** `Planned`
 
 ---
 
 ## D. Current Active File
-- `backend/app/api/v1/endpoints/auth.py`
+- `backend/app/api/v1/endpoints/directory.py`
 
 ---
 
 ## E. Last Completed Task
-- Completed Phase 2B.4: Backend Authorization & Current User Foundation. Implemented `GET /api/v1/auth/me` returning sanitized public `UserResponse`. Created reusable `get_current_user` and `get_current_active_user` FastAPI dependencies with Bearer access token verification and in-database user validation. Created reusable `require_role` and `require_roles` RBAC dependencies with `RoleChecker` enforcing canonical roles (`student`, `faculty`, `admin`, `management`, `staff`) against authoritative MongoDB records (preventing client role spoofing). Generic HTTP 401 on authentication failures and HTTP 403 on insufficient permissions. Extended typed frontend client with `authApi.me()`. 139 passed backend tests (31 new tests), frontend lint and build 100% clean.
+- Completed Phase 2B.5: Domain Architecture Foundation. Established the reusable domain architecture pattern (`Router -> Auth/RBAC Dependency -> Domain Service -> Repository -> MongoDB Atlas`) and implemented the Campus Directory foundation. Preserved identity separation with `directory_profiles` extending base `users` identity. Enforced self-edit and administrative edit RBAC boundaries (`admin`/`management` only for modifying others). Excluded all security internals. Extended frontend API client with `directoryApi`. 153 passed backend tests (14 new tests), 0 frontend lint warnings/errors, clean build, git diff --check passed.
 
 ---
 

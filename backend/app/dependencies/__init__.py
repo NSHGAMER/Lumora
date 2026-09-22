@@ -10,17 +10,21 @@ from app.dependencies.auth import (
 )
 from app.dependencies.database import (
     get_database,
+    get_directory_repository,
     get_session_repository,
     get_user_repository,
 )
+from app.dependencies.directory import get_directory_service
 
 __all__ = [
     "get_database",
     "get_user_repository",
     "get_session_repository",
+    "get_directory_repository",
     "get_security_service",
     "get_registration_service",
     "get_auth_service",
+    "get_directory_service",
     "get_current_user",
     "get_current_active_user",
     "RoleChecker",
