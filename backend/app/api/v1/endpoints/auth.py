@@ -6,10 +6,17 @@ Phase 2B.3-B Implementation:
 - Thin route delegating entirely to RegistrationService.
 """
 
-from fastapi import APIRouter, Depends, Request, Response, status
+from typing import Optional
+from fastapi import APIRouter, Body, Depends, Request, Response, status
 
 from app.dependencies.auth import get_auth_service, get_registration_service
-from app.schemas.auth import AuthResponse, LoginRequest, RegisterRequest
+from app.schemas.auth import (
+    AuthResponse,
+    LoginRequest,
+    LogoutResponse,
+    RefreshTokenRequest,
+    RegisterRequest,
+)
 from app.schemas.response import ErrorResponse
 from app.schemas.user import UserResponse
 from app.services.auth_service import AuthService
@@ -91,3 +98,76 @@ async def login_user(
     auth_response, refresh_token = await auth_service.login(payload, device_info=device_info)
     auth_service.set_refresh_cookie(response, refresh_token)
     return auth_response
+
+
+@router.post(
+    "/refresh",
+    status_code=status.HTTP_200_OK,
+    response_model=AuthResponse,
+    summary="Rotate refresh token and issue new access JWT",
+    description=(
+        "Authenticates via the HttpOnly lumora_refresh_token cookie. "
+        "Atomically consumes the old session, issues a new short-lived access JWT, "
+        "and rotates the refresh token in the HttpOnly cookie."
+    ),
+    responses={
+        status.HTTP_200_OK: {
+            "model": AuthResponse,
+            "description": "Session rotated successfully. New access JWT and refresh cookie set.",
+        },
+        status.HTTP_401_UNAUTHORIZED: {
+            "model": ErrorResponse,
+            "description": "Invalid, expired, or revoked refresh token.",
+        },
+    },
+)
+async def refresh_token(
+    response: Response,
+    request: Request,
+    payload: Optional[RefreshTokenRequest] = Body(default=None),
+    auth_service: AuthService = Depends(get_auth_service),
+) -> AuthResponse:
+    """Execute refresh token rotation and set new HttpOnly cookie."""
+    cookie_token = request.cookies.get(auth_service.REFRESH_COOKIE_NAME)
+    body_token = payload.refresh_token if payload else None
+    raw_token = cookie_token or body_token
+
+    device_info = request.headers.get("user-agent")
+    auth_resp, new_refresh_token = await auth_service.refresh_session(
+        raw_refresh_token=raw_token,
+        device_info=device_info,
+    )
+    auth_service.set_refresh_cookie(response, new_refresh_token)
+    return auth_resp
+
+
+@router.post(
+    "/logout",
+    status_code=status.HTTP_200_OK,
+    response_model=LogoutResponse,
+    summary="Terminate active session and clear refresh token cookie",
+    description=(
+        "Revokes the session matching the client's refresh token cookie and clears "
+        "the HttpOnly cookie. Safe and idempotent."
+    ),
+    responses={
+        status.HTTP_200_OK: {
+            "model": LogoutResponse,
+            "description": "Session revoked and cookie cleared.",
+        },
+    },
+)
+async def logout_user(
+    response: Response,
+    request: Request,
+    payload: Optional[RefreshTokenRequest] = Body(default=None),
+    auth_service: AuthService = Depends(get_auth_service),
+) -> LogoutResponse:
+    """Revoke session from cookie or body and clear refresh cookie."""
+    cookie_token = request.cookies.get(auth_service.REFRESH_COOKIE_NAME)
+    body_token = payload.refresh_token if payload else None
+    raw_token = cookie_token or body_token
+
+    result = await auth_service.logout(raw_refresh_token=raw_token)
+    auth_service.clear_refresh_cookie(response)
+    return result

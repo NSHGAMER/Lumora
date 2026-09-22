@@ -9,7 +9,7 @@ Adheres to:
 from datetime import datetime, timezone
 from typing import Any, Optional
 from bson import ObjectId
-from pymongo import DESCENDING
+from pymongo import DESCENDING, ReturnDocument
 from pymongo.asynchronous.collection import AsyncCollection
 
 from app.schemas.session import SessionCreateInternal, SessionDocument
@@ -40,6 +40,27 @@ class SessionRepository:
         if not token_hash:
             return None
         doc = await self.collection.find_one({"token_hash": token_hash.strip()})
+        return self._document_to_schema(doc) if doc else None
+
+    async def consume_active_session(self, token_hash: str) -> Optional[SessionDocument]:
+        """Atomically find, validate unrevoked/unexpired state, and revoke an active session.
+
+        Enforces that a session can be consumed for rotation exactly once.
+        Concurrent attempts with the same token_hash will find revoked_at is not None,
+        returning None and preventing race conditions or duplicate rotations.
+        """
+        if not token_hash:
+            return None
+        now = datetime.now(timezone.utc)
+        doc = await self.collection.find_one_and_update(
+            {
+                "token_hash": token_hash.strip(),
+                "revoked_at": None,
+                "expires_at": {"$gt": now},
+            },
+            {"$set": {"revoked_at": now}},
+            return_document=ReturnDocument.AFTER,
+        )
         return self._document_to_schema(doc) if doc else None
 
     async def get_active_sessions_for_user(self, user_id: str) -> list[SessionDocument]:

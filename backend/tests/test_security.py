@@ -392,6 +392,33 @@ async def test_session_repository_revocations() -> None:
     mock_collection.update_many.assert_called_once()
 
 
+@pytest.mark.asyncio
+async def test_session_repository_consume_active_session() -> None:
+    """SessionRepository atomically consumes active session via find_one_and_update."""
+    mock_collection = MagicMock()
+    mock_collection.find_one_and_update = AsyncMock()
+    mock_doc = {
+        "_id": "507f1f77bcf86cd799439011",
+        "user_id": "usr_123",
+        "token_hash": "fingerprint_hash_abc",
+        "expires_at": datetime.now(timezone.utc) + timedelta(days=7),
+        "created_at": datetime.now(timezone.utc),
+        "revoked_at": datetime.now(timezone.utc),
+        "device_info": "Firefox / Linux",
+    }
+    mock_collection.find_one_and_update.return_value = mock_doc
+
+    repo = SessionRepository(mock_collection)
+    consumed = await repo.consume_active_session("fingerprint_hash_abc")
+    assert consumed is not None
+    assert consumed.id == "507f1f77bcf86cd799439011"
+    mock_collection.find_one_and_update.assert_called_once()
+
+    # Empty token hash returns None without database query
+    empty_result = await repo.consume_active_session("")
+    assert empty_result is None
+
+
 # ==============================================================================
 # 8. JWT & Token Configuration Tests
 # ==============================================================================

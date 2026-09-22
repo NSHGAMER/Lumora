@@ -136,3 +136,12 @@ class AuthResponse(BaseModel):
     token_type: str = Field(default="bearer", description="Token scheme type")
     expires_in: int = Field(description="Access token lifespan in seconds")
     user: UserResponse = Field(description="Authenticated user profile excluding sensitive credentials")
+
+
+class LogoutResponse(BaseModel):
+    """Safe response model for session termination."""
+
+    message: str = Field(
+        default="Successfully logged out",
+        description="Session termination confirmation",
+    )

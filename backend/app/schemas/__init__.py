@@ -1,6 +1,7 @@
 from app.schemas.auth import (
     AuthResponse,
     LoginRequest,
+    LogoutResponse,
     RefreshTokenRequest,
     RegisterRequest,
     TokenPayload,
@@ -41,6 +42,7 @@ __all__ = [
     "RegisterRequest",
     "LoginRequest",
     "RefreshTokenRequest",
+    "LogoutResponse",
     "TokenPayload",
     "AuthResponse",
     "normalize_email",

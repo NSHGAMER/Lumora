@@ -134,6 +134,19 @@
     - Supported multi-device sessions without preemptively invalidating concurrent logins.
     - Created comprehensive test suite in `backend/tests/test_login.py` (91 total passing backend tests, 1 skipped).
 
+10. **Phase 2B.3-D Refresh Token Rotation, Session Revocation & Logout Implementation:**
+    - Implemented `POST /api/v1/auth/refresh` endpoint obtaining the refresh token primarily via the HttpOnly `lumora_refresh_token` cookie (with body fallback for non-browser clients).
+    - Designed atomic rotation via `SessionRepository.consume_active_session` (`find_one_and_update` with `revoked_at: None` and `expires_at > now`), preventing race conditions and ensuring that concurrent refresh attempts on the same token cannot both succeed.
+    - Built single-use rotation: the consumed session document remains permanently revoked with timestamp for auditing, while a brand-new session document is persisted storing the SHA-256 digest of the new cryptographically secure random token.
+    - Handled token reuse gracefully: previously revoked or expired tokens return generic `HTTP 401 Unauthorized: "Invalid or expired refresh token"`, protecting internal session states.
+    - Maintained invariant: `last_login_at` is left unchanged on refresh and logout (only updated during initial credential login).
+    - Preserved exact minimal JWT claim set (`sub`, `role`, `iss`, `aud`, `exp`, `iat`), excluding profile and sensitive fields.
+    - Implemented `POST /api/v1/auth/logout` revoking the specific session identified by the refresh token and safely clearing the `lumora_refresh_token` cookie with matching security parameters (`Path=/api/v1/auth`, `SameSite=lax`, `Secure=settings.is_production`, `HttpOnly=True`).
+    - Safe and idempotent logout: missing, invalid, or already revoked cookies succeed safely without leaking database details.
+    - Multi-device session isolation: refreshing or logging out one session has zero impact on active sessions of the same user on other devices.
+    - Verified zero frontend modifications (`src/*` untouched).
+    - Comprehensive test suite in `backend/tests/test_refresh_logout.py` (108 total passing backend tests, 1 skipped).
+
 ---
 
 ## C. Current Phase
@@ -146,25 +159,24 @@
   - **Phase 2B.3-A — Authentication Contracts + Password Security Foundation:** `Completed` (`Implemented` & `Tested`)
   - **Phase 2B.3-B — Registration Backend:** `Completed` (`Implemented` & `Tested`)
   - **Phase 2B.3-C — Login, Sessions, JWT & Refresh Tokens:** `Completed` (`Implemented` & `Tested`)
-  - **Phase 2B.3-D — Refresh Token Rotation, Session Revocation, Logout & RBAC:** `Planned` (Next Milestone)
+  - **Phase 2B.3-D — Refresh Token Rotation, Session Revocation, Logout:** `Completed` (`Implemented` & `Tested`)
+  - **Phase 2B.3-E — RBAC & Protected Endpoints (/auth/me):** `Planned` (Next Milestone)
 - **Phase 2B.4 — Frontend Auth Integration:** `Planned`
 
 ---
 
 ## D. Current Active File
-- `backend/app/services/auth_service.py`
+- `backend/app/api/v1/endpoints/auth.py`
 
 ---
 
 ## E. Last Completed Task
-- Completed Phase 2B.3-C: Login, Sessions, JWT & Refresh Tokens. Implemented `POST /api/v1/auth/login`, `AuthService`, dual-identifier resolution, Argon2id verification, short-lived access JWT issuance, high-entropy refresh tokens transported via secure HttpOnly cookies, MongoDB session tracking storing strictly SHA-256 token digests, `last_login_at` atomic updates, and 90 passing pytest tests. Zero frontend changes, zero secrets in source code.
+- Completed Phase 2B.3-D: Refresh Token Rotation, Session Revocation & Logout. Implemented `POST /api/v1/auth/refresh` and `POST /api/v1/auth/logout`, atomic session consumption via `SessionRepository.consume_active_session`, single-use rotation, reuse detection, idempotent logout, cookie clearing, multi-device safety, and 108 passing backend tests (1 skipped). Zero frontend code touched.
 
 ---
 
 ## F. Next Task
-- Phase 2B.3-D — Refresh Token Rotation, Session Revocation, Logout & RBAC:
-  - Implement `POST /api/v1/auth/refresh` with single-use rotating refresh tokens and reuse detection.
-  - Implement `POST /api/v1/auth/logout` revoking active refresh sessions and clearing the HttpOnly cookie.
+- Phase 2B.3-E — RBAC & Protected Endpoints:
   - Implement `GET /api/v1/auth/me` returning the authenticated user profile.
   - Enforce backend role-based access control (RBAC) middleware for canonical roles (`student`, `faculty`, `admin`, `management`, `staff`).
 

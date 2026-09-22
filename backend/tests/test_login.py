@@ -33,6 +33,7 @@ Validates:
 30. Refresh token delivered via secure HttpOnly cookie
 """
 
+import asyncio
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 from fastapi import HTTPException, status
@@ -104,6 +105,7 @@ class InMemorySessionRepository:
     def __init__(self) -> None:
         self.sessions: dict[str, SessionDocument] = {}
         self._id_counter = 1
+        self._lock = asyncio.Lock()
 
     async def create_session(self, session_data: SessionCreateInternal) -> SessionDocument:
         now = datetime.now(timezone.utc)
@@ -131,6 +133,29 @@ class InMemorySessionRepository:
             if s.token_hash == token_hash:
                 return s
         return None
+
+    async def consume_active_session(self, token_hash: str) -> Optional[SessionDocument]:
+        """Atomically find, validate unrevoked/unexpired state, and revoke an active session."""
+        async with self._lock:
+            now = datetime.now(timezone.utc)
+            for s in self.sessions.values():
+                if s.token_hash == token_hash:
+                    exp = s.expires_at if s.expires_at.tzinfo else s.expires_at.replace(tzinfo=timezone.utc)
+                    if s.revoked_at is None and exp > now:
+                        s.revoked_at = now
+                        return s
+                    return None
+            return None
+
+    async def revoke_session(self, token_hash: str) -> bool:
+        """Mark a specific session as revoked."""
+        async with self._lock:
+            now = datetime.now(timezone.utc)
+            for s in self.sessions.values():
+                if s.token_hash == token_hash and s.revoked_at is None:
+                    s.revoked_at = now
+                    return True
+            return False
 
 
 # ==============================================================================

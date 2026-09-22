@@ -193,10 +193,23 @@ Phases are executed systematically. Future phases must not be implemented premat
 - [x] Multi-device session support (each login generates a distinct session).
 - [x] Public `AuthResponse` model returning access token and sanitized user profile without sensitive credentials.
 - [x] Comprehensive test suite in `backend/tests/test_login.py` (91 total passing backend tests, 1 skipped).
-- [ ] Next: Phase 2B.3-D — Refresh Token Rotation, Session Revocation, Logout & Protected Endpoints.
 
 
-##### Phase 2B.3-D — RBAC & Protected Endpoints
+##### Phase 2B.3-D — Refresh Token Rotation, Session Revocation & Logout
+**Status:** `Implemented` & `Tested`
+- [x] Implement `POST /api/v1/auth/refresh` endpoint obtaining the refresh token primarily via the HttpOnly `lumora_refresh_token` cookie (with body fallback for non-browser clients).
+- [x] Atomic session consumption in `SessionRepository.consume_active_session` preventing concurrency race conditions and duplicate rotation.
+- [x] Single-use rotation: old session revoked and audited, new random token issued and hashed in new session document.
+- [x] Reuse detection: previously rotated or revoked tokens safely rejected with generic HTTP 401 Unauthorized.
+- [x] Inactive or deleted user verification during refresh: rejects and prevents token issuance.
+- [x] Invariant preservation: `last_login_at` remains unchanged on refresh and logout; minimal JWT claims (`sub`, `role`, `iss`, `aud`, `exp`, `iat`) preserved.
+- [x] Implement `POST /api/v1/auth/logout` revoking the specific session and clearing the `lumora_refresh_token` cookie with identical Path, SameSite, Secure, and HttpOnly parameters.
+- [x] Idempotent and safe logout with zero internal session or database error leakage.
+- [x] Multi-device session isolation: refreshing or logging out one session leaves other active sessions intact.
+- [x] Comprehensive test suite in `backend/tests/test_refresh_logout.py` (108 total passing backend tests, 1 skipped).
+
+
+##### Phase 2B.3-E — RBAC & Protected Endpoints
 **Status:** `Planned`
 - [ ] Implement `GET /api/v1/auth/me`.
 - [ ] Backend role-based authorization dependencies/middleware (RBAC) for canonical roles: `student`, `faculty`, `admin`, `management`, `staff`.
