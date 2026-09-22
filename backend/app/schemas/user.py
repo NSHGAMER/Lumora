@@ -16,6 +16,8 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 # Canonical Lumora RBAC Roles
 CanonicalRole = Literal["student", "faculty", "admin", "management", "staff"]
 VALID_ROLES: set[str] = {"student", "faculty", "admin", "management", "staff"}
+PUBLIC_REGISTRATION_ROLES: set[str] = {"student", "faculty"}
+
 
 
 def normalize_email(email: str) -> str:

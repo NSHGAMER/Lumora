@@ -14,6 +14,7 @@ from app.schemas.session import (
     SessionResponse,
 )
 from app.schemas.user import (
+    PUBLIC_REGISTRATION_ROLES,
     CanonicalRole,
     UserCreateInternal,
     UserDocument,
@@ -29,6 +30,8 @@ __all__ = [
     "ErrorResponse",
     "StandardResponse",
     "CanonicalRole",
+    "PUBLIC_REGISTRATION_ROLES",
+
     "UserDocument",
     "UserCreateInternal",
     "UserResponse",

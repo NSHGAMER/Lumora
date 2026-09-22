@@ -167,11 +167,17 @@ Phases are executed systematically. Future phases must not be implemented premat
 - [x] Comprehensive security and contract test suite in `backend/tests/test_security.py` (59 unit/contract tests passing).
 
 ##### Phase 2B.3-B — Registration Backend
-**Status:** `Planned` (Next Milestone)
-- [ ] Implement `POST /api/v1/auth/register` endpoint.
-- [ ] Enforce institutional identifier uniqueness and email uniqueness via `UserRepository`.
-- [ ] Argon2id password hashing prior to persistence.
-- [ ] Immediate account activation without SMTP/email confirmation.
+**Status:** `Implemented` & `Tested`
+- [x] Implement `POST /api/v1/auth/register` endpoint delegating to `RegistrationService`.
+- [x] Restrict public self-registration roles strictly to `student` and `faculty` via centralized `PUBLIC_REGISTRATION_ROLES` policy; reject `admin`, `management`, and `staff` with HTTP 403 Forbidden.
+- [x] Deterministic duplicate checking for institutional identifier and email via `UserRepository`, returning HTTP 409 Conflict without leaking database internals.
+- [x] Handle concurrent MongoDB `DuplicateKeyError` race conditions returning HTTP 409 Conflict.
+- [x] Cryptographic Argon2id password hashing prior to persistence; plaintext passwords are never stored or logged.
+- [x] Immediate account activation (`is_active=True`, `last_login_at=None`) without SMTP, verification emails, or confirmation tokens.
+- [x] Sanitized public `UserResponse` contract strictly excluding `password`, `password_hash`, tokens, and database internals.
+- [x] Zero session creation, zero token issuance, and zero auto-login during registration.
+- [x] Comprehensive test suite in `backend/tests/test_registration.py` (77 passing backend tests).
+
 
 ##### Phase 2B.3-C — Login, Sessions, JWT & Refresh Tokens
 **Status:** `Planned`

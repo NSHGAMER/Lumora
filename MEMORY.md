@@ -115,6 +115,15 @@
     - Updated `backend/.env.example` with safe, placeholder-only configuration templates.
     - Created comprehensive test suite in `backend/tests/test_security.py` with 59 passing unit/contract tests (100% pass rate).
 
+12. **Phase 2B.3-B Registration Backend:**
+    - Implemented real registration endpoint: `POST /api/v1/auth/register` returning HTTP 201 Created and safe `UserResponse`.
+    - Enforced centralized role policy `PUBLIC_REGISTRATION_ROLES = {"student", "faculty"}`; privileged roles (`admin`, `management`, `staff`) return HTTP 403 Forbidden.
+    - Built dedicated `RegistrationService` coordinating duplicate checks, Argon2id hashing, user construction, persistence, and error handling (Route -> Service -> Repository -> MongoDB).
+    - Enforced deterministic identifier and email normalization before duplicate lookup and persistence.
+    - Handled proactive duplicates and concurrent MongoDB `DuplicateKeyError` races returning clean HTTP 409 Conflict without leaking database internals.
+    - Maintained core invariant: account is immediately active (`is_active=True`, `last_login_at=None`) with zero SMTP, zero verification emails, and zero tokens issued at registration.
+    - Created comprehensive test suite in `backend/tests/test_registration.py` with 77 total passing backend tests (100% pass rate).
+
 ---
 
 ## C. Current Phase
@@ -125,30 +134,30 @@
 - **Phase 2B.2 — MongoDB Atlas Persistence Layer:** `Completed` (`Implemented` & `Tested`)
 - **Phase 2B.3 — Real Authentication & JWT Security:** `In Progress`
   - **Phase 2B.3-A — Authentication Contracts + Password Security Foundation:** `Completed` (`Implemented` & `Tested`)
-  - **Phase 2B.3-B — Registration Backend:** `Planned` (Next Milestone)
-  - **Phase 2B.3-C — Login, Sessions, JWT & Refresh Tokens:** `Planned`
+  - **Phase 2B.3-B — Registration Backend:** `Completed` (`Implemented` & `Tested`)
+  - **Phase 2B.3-C — Login, Sessions, JWT & Refresh Tokens:** `Planned` (Next Milestone)
   - **Phase 2B.3-D — RBAC & Protected Endpoints:** `Planned`
 - **Phase 2B.4 — Frontend Auth Integration:** `Planned`
 
 ---
 
 ## D. Current Active File
-- `backend/app/core/security.py`
+- `backend/app/api/v1/endpoints/auth.py`
 
 ---
 
 ## E. Last Completed Task
-- Completed Phase 2B.3-A: Authentication Contracts + Password Security Foundation. Implemented Argon2id password security service, centralized password policy, Pydantic auth schemas, session persistence schemas and repository, centralized JWT configuration with production validation, safe .env.example placeholders, and 59 passing pytest tests. Zero frontend changes, zero route implementations yet, zero secrets in source code.
+- Completed Phase 2B.3-B: Registration Backend. Implemented `POST /api/v1/auth/register`, `RegistrationService`, centralized `PUBLIC_REGISTRATION_ROLES`, deterministic duplicate validation (409 Conflict), privileged role protection (403 Forbidden), Argon2id password hashing, immediate account activation, and 77 passing unit/API tests. Zero frontend changes, zero auto-login or session creation, zero secrets in source code.
 
 ---
 
 ## F. Next Task
-- Phase 2B.3-B — Registration Backend:
-  - Implement `POST /api/v1/auth/register` route.
-  - Enforce institutional identifier and email uniqueness validation via `UserRepository`.
-  - Argon2id password hashing before persistence.
-  - Immediate account activation invariant (zero SMTP, zero verification emails).
-  - Return safe `AuthResponse` or `UserResponse`.
+- Phase 2B.3-C — Login, Sessions, JWT & Refresh Tokens:
+  - Implement `POST /api/v1/auth/login`, `POST /api/v1/auth/refresh`, and `POST /api/v1/auth/logout`.
+  - Issue cryptographically signed short-lived JWT access tokens and secure HttpOnly rotating refresh tokens.
+  - Store SHA-256 token fingerprints in MongoDB `sessions` collection via `SessionRepository`.
+  - Update `last_login_at` on successful authentication.
+
 
 
 ---

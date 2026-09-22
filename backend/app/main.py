@@ -86,6 +86,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             error_code = "UNAUTHORIZED"
         elif exc.status_code == status.HTTP_403_FORBIDDEN:
             error_code = "ACCESS_FORBIDDEN"
+        elif exc.status_code == status.HTTP_409_CONFLICT:
+            error_code = "RESOURCE_CONFLICT"
+
 
         payload = ErrorResponse(
             success=False,
