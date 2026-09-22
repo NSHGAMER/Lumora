@@ -100,7 +100,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onSelectTab }) => {
                 Zero SMTP Required
               </span>
             </div>
-            <p className="text-slate-300 text-[11px] leading-relaxed">
+            <p className="text-slate-300 text-xs leading-relaxed">
               Your account becomes active instantly upon registration. No waiting for verification emails, activation tokens, or external confirmation delays.
             </p>
           </div>

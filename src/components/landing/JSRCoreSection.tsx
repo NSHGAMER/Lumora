@@ -197,12 +197,13 @@ export const JSRCoreSection: React.FC = () => {
                 <GlassCard
                   glowColor={idx % 2 === 0 ? 'cyan' : 'purple'}
                   interactive={true}
-                  className="h-full flex flex-col justify-between p-6 space-y-4 hover:border-cyan-500/40"
+                  className="h-full hover:border-cyan-500/40"
+                  contentClassName="justify-between space-y-4"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <div className="w-10 h-10 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-center text-cyan-400">
-                        <Icon className="w-5 h-5" />
+                        <Icon className="w-5 h-5" aria-hidden="true" />
                       </div>
                       <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
                         {card.badge}
@@ -218,9 +219,9 @@ export const JSRCoreSection: React.FC = () => {
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t border-white/10 text-[10px] font-mono text-slate-400 flex items-center justify-between">
-                    <span>JSR KERNEL SYNCED</span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+                  <div className="mt-auto pt-3 border-t border-white/10 text-[10px] font-mono text-slate-400 flex items-center justify-between" aria-label="AI capability pipeline active">
+                    <span>AI ARCHITECTURE PIPELINE</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400/80" aria-hidden="true" />
                   </div>
                 </GlassCard>
               </motion.div>

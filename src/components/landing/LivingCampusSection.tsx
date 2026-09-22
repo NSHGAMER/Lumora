@@ -97,9 +97,9 @@ export const LivingCampusSection: React.FC = () => {
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
               >
                 <GlassCard glowColor="cyan" className="p-4 space-y-1 hover:border-cyan-500/40">
-                  <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
+                  <div className="flex items-center justify-between text-xs font-mono text-slate-400">
                     <span>{item.label}</span>
-                    <Icon className={`w-3.5 h-3.5 ${item.color}`} />
+                    <Icon className={`w-3.5 h-3.5 ${item.color}`} aria-hidden="true" />
                   </div>
                   <div className="text-2xl font-heading font-bold text-white tracking-tight">
                     {item.value}
@@ -121,8 +121,8 @@ export const LivingCampusSection: React.FC = () => {
         {/* Bottom Transition Architecture Chips */}
         <div className="pt-16 text-center space-y-8">
           
-          <div className="text-xs font-mono uppercase tracking-widest text-slate-400">
-            POWERED BY HIGH-PERFORMANCE ARCHITECTURE
+          <div className="text-xs font-mono tracking-wider text-slate-400">
+            Powered by High-Performance Architecture
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-4">

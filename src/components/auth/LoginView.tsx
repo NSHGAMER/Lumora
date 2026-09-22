@@ -84,7 +84,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSelectTab }) => {
           <Sparkles className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
           <div className="space-y-1">
             <span className="font-semibold text-white">Phase 2A Frontend Architecture:</span>
-            <p className="text-slate-300 text-[11px] leading-relaxed">
+            <p className="text-slate-300 text-xs leading-relaxed">
               FastAPI backend connection will activate in Phase 2B. Test the UI below or use the one-click demo profiles.
             </p>
           </div>

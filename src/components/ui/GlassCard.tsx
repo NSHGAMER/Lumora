@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 interface GlassCardProps {
   children: React.ReactNode;
   className?: string;
+  contentClassName?: string;
   glowColor?: 'blue' | 'cyan' | 'purple' | 'green' | 'none';
   interactive?: boolean;
   onClick?: () => void;
@@ -12,6 +13,7 @@ interface GlassCardProps {
 export const GlassCard: React.FC<GlassCardProps> = ({
   children,
   className = '',
+  contentClassName = '',
   glowColor = 'cyan',
   interactive = true,
   onClick,
@@ -67,7 +69,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({
       )}
 
       {/* Content wrapper */}
-      <div className="relative z-10">{children}</div>
+      <div className={`relative z-10 h-full flex flex-col ${contentClassName}`}>{children}</div>
     </motion.div>
   );
 };

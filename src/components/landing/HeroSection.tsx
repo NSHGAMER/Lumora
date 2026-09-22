@@ -83,7 +83,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             onClick={onOpenJSR}
             className="px-8 py-4 text-base"
           >
-            <Sparkles className="w-5 h-5 text-cyan-400" />
+            <Sparkles className="w-5 h-5 text-cyan-400" aria-hidden="true" />
             Talk to JSR AI
           </MagneticButton>
         </motion.div>
@@ -93,17 +93,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.5 }}
-          className="pt-2 flex items-center justify-center gap-2 text-xs font-mono text-slate-500"
+          className="pt-2 flex items-center justify-center"
         >
-          <span>Press</span>
           <button
+            type="button"
             onClick={onOpenCommandPalette}
-            className="px-2 py-1 rounded bg-slate-900 border border-white/10 hover:border-cyan-500/40 text-slate-300 transition-colors inline-flex items-center gap-1 cursor-pointer"
+            aria-label="Open Spotlight Command Palette (or press Command-K)"
+            className="group inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/60 border border-white/10 hover:border-cyan-500/40 text-xs font-mono text-slate-400 hover:text-slate-200 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/50"
           >
-            <Command className="w-3 h-3 text-cyan-400" />
-            <span>K</span>
+            <span>Press</span>
+            <kbd className="px-2 py-0.5 rounded bg-slate-900 border border-white/10 group-hover:border-cyan-500/40 text-slate-300 transition-colors inline-flex items-center gap-1">
+              <Command className="w-3 h-3 text-cyan-400" aria-hidden="true" />
+              <span>K</span>
+            </kbd>
+            <span>anytime to open Spotlight Command Palette</span>
           </button>
-          <span>anytime to open Spotlight Command Palette</span>
         </motion.div>
       </div>
 

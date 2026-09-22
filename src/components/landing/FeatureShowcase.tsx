@@ -65,7 +65,7 @@ export const FeatureShowcase: React.FC<FeatureShowcaseProps> = ({
             <span className="text-cyan-400 font-bold">JSR: </span>
             &quot;I noticed a 3-hour gap in your Wednesday schedule. I have pre-booked Quantum Lab Workstation B-12 for your research session.&quot;
           </div>
-          <div className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-emerald-300 text-[11px]">
+          <div className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-emerald-300 text-xs">
             ✓ Schedule optimized • Room Reserved • Calendar Synced
           </div>
         </div>

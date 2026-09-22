@@ -207,7 +207,7 @@ export const CookiePreferencesView: React.FC<CookiePreferencesViewProps> = ({ on
 
           <div className="p-3 rounded-xl bg-white/[0.02] border border-white/5 text-xs font-mono text-slate-400 space-y-1">
             <div className="text-slate-300 font-medium">Compliance Guarantee:</div>
-            <p className="text-[11px] text-slate-400">
+            <p className="text-xs text-slate-400">
               Disabled by default. Lumora never injects third-party marketing beacons or ad network trackers.
             </p>
           </div>

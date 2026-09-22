@@ -92,6 +92,18 @@
    - Idempotent index creation on startup with stable names (`idx_users_normalized_email_unique`, `idx_users_institutional_id_unique`, `idx_users_role`, `idx_users_created_at`) plus session collection blueprint.
    - Pure persistence `UserRepository` abstraction (`get_by_id`, `get_by_email`, `get_by_institutional_id`, `get_by_identifier`, `create_user`, `update_last_login`, `count`) injected via dependencies.
    - Full test coverage with 28 tests passing (100% pass rate) without requiring live production Atlas credentials.
+10. **Usability + Accessibility Refinement Pass (19 Heuristic Findings):**
+    - Executed minimal, evidence-based usability and accessibility refinements across frontend UI without altering locked visual identity.
+    - Elevated heading contrast in `ProblemSection.tsx` via updated `.text-gradient` stops (contrast ratio > 9:1 against background).
+    - Upgraded 11px body/supporting text to readable 12px `text-xs` across forms, cards, and informational banners while preserving technical micro-badges.
+    - Replaced deceptive runtime kernel sync label in `JSRCoreSection.tsx` with static capability descriptor `NEURAL ARCHITECTURE PIPELINE` and accessible status.
+    - Differentiated static technical specifications from interactive navigation in `Footer.tsx`, added visible keyboard focus states, aligned bottom bar, and set `role="status"` on system nodes badge.
+    - Wrapped hero keyboard shortcut hint into an accessible, properly sized interactive control with semantic `<kbd>`.
+    - Added `aria-current="page"` and keyboard focus visible rings across `Navbar.tsx` and modal dialogs (`CommandPalette.tsx`, `JSRAssistantModal.tsx`).
+    - Aligned capability card footers in `JSRCoreSection.tsx` and `GlassCard.tsx` using `mt-auto` to ensure consistent visual rhythm.
+    - Strengthened secondary CTA affordance (`variant="glow"`) in `MagneticButton.tsx` and marked decorative icons `aria-hidden="true"`.
+    - Preserved locked visual baseline, 3D Canvas, and header composition without touching backend or auth.
+    - Verified with oxlint (0 errors, 0 warnings), npm run build (built cleanly in 3.67s), pytest (28 tests passing, 100%), and git diff --check (clean).
 
 ---
 
@@ -107,12 +119,12 @@
 ---
 
 ## D. Current Active File
-- `backend/app/core/database.py`
+- `src/components/navbar/Navbar.tsx`
 
 ---
 
 ## E. Last Completed Task
-- Completed Phase 2B.2 MongoDB Atlas Persistence + Data Foundation: established application-scoped AsyncMongoClient pool, UserRepository, UserDocument and safe UserResponse schemas, deterministic normalization rules, idempotent index creation, and truthful database health inspection. Verified 28 pytest tests passing, oxlint 0 warnings/0 errors, and frontend build passing in 904ms.
+- Completed Usability + Accessibility Refinement Pass addressing 19 audit findings: minimal accessibility refinements, contrast upgrade, type-scale consolidation, footer affordances, keyboard hint interactive targets, ARIA dialog roles, and card rhythm alignment without altering locked Lumora visual identity or touching backend/auth. Verified oxlint (0/0), npm run build (clean), pytest (28 passing), git diff --check (clean).
 
 ---
 

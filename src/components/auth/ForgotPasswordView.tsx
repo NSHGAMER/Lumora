@@ -43,7 +43,7 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({ onSelect
           <Info className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
           <div className="space-y-1">
             <div className="font-semibold text-white">No-SMTP Security Architecture:</div>
-            <p className="text-slate-300 text-[11px] leading-relaxed">
+            <p className="text-slate-300 text-xs leading-relaxed">
               Lumora does not send automated password-reset emails or rely on unauthenticated SMTP recovery channels. Identity recovery is verified through official institutional channels.
             </p>
           </div>
@@ -88,12 +88,12 @@ export const ForgotPasswordView: React.FC<ForgotPasswordViewProps> = ({ onSelect
                   <ShieldCheck className="w-4 h-4 text-emerald-400" />
                   <span>Recovery Query Registered</span>
                 </div>
-                <p className="text-slate-300 text-[11px] leading-relaxed">
+                <p className="text-slate-300 text-xs leading-relaxed">
                   Query recorded for institutional identifier <span className="text-cyan-300 font-bold">{identifier}</span>.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 space-y-2 text-slate-400 text-[11px]">
+              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 space-y-2 text-slate-400 text-xs">
                 <div className="font-semibold text-white flex items-center gap-1.5">
                   <Building className="w-3.5 h-3.5 text-cyan-400" />
                   <span>Institutional Recovery Options:</span>

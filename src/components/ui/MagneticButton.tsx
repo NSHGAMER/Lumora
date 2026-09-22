@@ -41,7 +41,7 @@ export const MagneticButton: React.FC<MagneticButtonProps> = ({
       case 'primary':
         return 'bg-gradient-to-r from-blue-600 via-cyan-500 to-purple-600 text-white shadow-accent-blue border border-cyan-400/30 hover:shadow-cyan-500/50';
       case 'glow':
-        return 'bg-[#0A1019] text-white border border-cyan-500/40 hover:border-cyan-400 shadow-glass-glow';
+        return 'bg-[#0A1019]/90 text-white border border-cyan-400/50 hover:border-cyan-300 hover:bg-[#0F172A] shadow-glass-glow';
       case 'glass':
         return 'bg-white/5 backdrop-blur-xl text-slate-200 border border-white/10 hover:border-white/30 hover:bg-white/10';
       case 'secondary':
@@ -60,7 +60,7 @@ export const MagneticButton: React.FC<MagneticButtonProps> = ({
       animate={{ x: position.x, y: position.y }}
       transition={{ type: 'spring', stiffness: 250, damping: 15, mass: 0.2 }}
       onClick={onClick}
-      className={`relative group inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-heading font-medium text-sm transition-all duration-300 overflow-hidden cursor-pointer ${getVariantStyles()} ${className}`}
+      className={`relative group inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-heading font-medium text-sm transition-all duration-300 overflow-hidden cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05070B] ${getVariantStyles()} ${className}`}
     >
       {/* Background glow sheen effect on hover */}
       <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-white/0 via-white/15 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out pointer-events-none" />
@@ -68,7 +68,7 @@ export const MagneticButton: React.FC<MagneticButtonProps> = ({
       <span className="relative z-10 flex items-center gap-2">
         {children}
         {showArrow && (
-          <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          <ArrowUpRight aria-hidden="true" className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         )}
       </span>
     </motion.button>

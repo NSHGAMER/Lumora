@@ -111,13 +111,16 @@ def run_quantum_sim(tensor_a, tensor_b):
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="JSR AI Campus Co-Pilot"
             className="relative w-full max-w-3xl h-[640px] bg-[#0A1019] border border-cyan-500/30 rounded-2xl shadow-2xl shadow-cyan-950/50 flex flex-col overflow-hidden z-10"
           >
             {/* Header */}
             <div className="px-6 py-4 border-b border-white/10 bg-slate-950/60 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 via-cyan-500 to-purple-600 shadow-accent-cyan">
-                  <Sparkles className="w-5 h-5 text-white animate-spin-slow" />
+                  <Sparkles className="w-5 h-5 text-white animate-spin-slow" aria-hidden="true" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
@@ -132,14 +135,16 @@ def run_quantum_sim(tensor_a, tensor_b):
 
               <div className="flex items-center gap-2">
                 <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono">
-                  <Volume2 className="w-3.5 h-3.5 animate-pulse" />
+                  <Volume2 className="w-3.5 h-3.5 animate-pulse" aria-hidden="true" />
                   <span>Voice Synth Ready</span>
                 </div>
                 <button
+                  type="button"
                   onClick={onClose}
-                  className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  aria-label="Close JSR Assistant"
+                  className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-5 h-5" aria-hidden="true" />
                 </button>
               </div>
             </div>
@@ -170,9 +175,9 @@ def run_quantum_sim(tensor_a, tensor_b):
 
                     {msg.codeSnippet && (
                       <div className="mt-3 rounded-xl bg-slate-950 border border-slate-800 p-3 font-mono text-xs overflow-x-auto">
-                        <div className="flex items-center justify-between text-slate-400 pb-2 mb-2 border-b border-slate-800 text-[11px]">
+                        <div className="flex items-center justify-between text-slate-400 pb-2 mb-2 border-b border-slate-800 text-xs">
                           <span className="flex items-center gap-1.5 text-cyan-400">
-                            <Code className="w-3.5 h-3.5" /> Python
+                            <Code className="w-3.5 h-3.5" aria-hidden="true" /> Python
                           </span>
                           <span>JSR Code Generator</span>
                         </div>
@@ -241,14 +246,16 @@ def run_quantum_sim(tensor_a, tensor_b):
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Ask JSR about courses, research labs, code debugging, or campus telemetry..."
+                  aria-label="Ask JSR AI a question"
                   className="flex-1 px-4 py-3 rounded-xl bg-slate-900/90 border border-white/10 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 text-sm font-sans"
                 />
                 <button
                   type="submit"
                   disabled={!input.trim()}
-                  className="p-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-accent-cyan cursor-pointer"
+                  aria-label="Send message to JSR AI"
+                  className="p-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-accent-cyan cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60"
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="w-4 h-4" aria-hidden="true" />
                 </button>
               </form>
             </div>

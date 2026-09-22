@@ -27,14 +27,14 @@ export const OperatingSystemMetrics: React.FC = () => {
                 className="space-y-1 p-3 rounded-xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/10"
               >
                 <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
-                  <Icon className="w-4 h-4 text-cyan-400" />
+                  <Icon className="w-4 h-4 text-cyan-400" aria-hidden="true" />
                   <span>{item.label}</span>
                 </div>
                 <div className="text-2xl sm:text-3xl font-heading font-bold text-white tracking-tight">
                   {item.value}
                 </div>
-                <div className="text-[11px] font-mono text-emerald-400 flex items-center gap-1">
-                  <span>↑</span>
+                <div className="text-xs font-mono text-emerald-400 flex items-center gap-1">
+                  <span aria-hidden="true">↑</span>
                   <span>{item.change}</span>
                 </div>
               </motion.div>

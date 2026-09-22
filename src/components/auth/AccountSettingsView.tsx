@@ -439,7 +439,7 @@ export const AccountSettingsView: React.FC<AccountSettingsViewProps> = ({ onSele
                 <label className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 cursor-pointer">
                   <div>
                     <div className="text-white font-medium">Urgent Campus Alerts</div>
-                    <div className="text-[11px] text-slate-500">Security bulletins and severe weather alerts</div>
+                    <div className="text-xs text-slate-400">Security bulletins and severe weather alerts</div>
                   </div>
                   <input
                     type="checkbox"
@@ -452,7 +452,7 @@ export const AccountSettingsView: React.FC<AccountSettingsViewProps> = ({ onSele
                 <label className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 cursor-pointer">
                   <div>
                     <div className="text-white font-medium">Course Schedule Changes</div>
-                    <div className="text-[11px] text-slate-500">Room relocations and lecture timings</div>
+                    <div className="text-xs text-slate-400">Room relocations and lecture timings</div>
                   </div>
                   <input
                     type="checkbox"
@@ -465,7 +465,7 @@ export const AccountSettingsView: React.FC<AccountSettingsViewProps> = ({ onSele
                 <label className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 cursor-pointer">
                   <div>
                     <div className="text-white font-medium">JSR Co-Pilot Summaries</div>
-                    <div className="text-[11px] text-slate-500">Daily workload and assignment advisory briefs</div>
+                    <div className="text-xs text-slate-400">Daily workload and assignment advisory briefs</div>
                   </div>
                   <input
                     type="checkbox"

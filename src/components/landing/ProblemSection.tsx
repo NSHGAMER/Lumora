@@ -214,9 +214,9 @@ export const ProblemSection: React.FC = () => {
                     </p>
                   </div>
 
-                  <div className="pt-4 border-t border-white/10 text-[11px] font-mono text-cyan-400/80 flex items-center justify-between">
+                  <div className="pt-4 border-t border-white/10 text-xs font-mono text-cyan-400/80 flex items-center justify-between">
                     <span>{card.metrics}</span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" aria-hidden="true" />
                   </div>
                 </GlassCard>
               </motion.div>

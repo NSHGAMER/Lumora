@@ -185,24 +185,30 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -20 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Spotlight Command Palette"
             className="relative w-full max-w-2xl bg-[#0A1019] border border-cyan-500/30 rounded-2xl shadow-2xl shadow-cyan-950/40 overflow-hidden z-10"
           >
             {/* Input Bar */}
             <div className="flex items-center px-4 border-b border-white/10 py-3.5 bg-white/5">
-              <Search className="w-5 h-5 text-cyan-400 mr-3" />
+              <Search className="w-5 h-5 text-cyan-400 mr-3" aria-hidden="true" />
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Type a command, ask JSR AI, or search campus modules..."
+                aria-label="Type a command, ask JSR AI, or search campus modules"
                 autoFocus
                 className="w-full bg-transparent text-slate-100 placeholder-slate-500 focus:outline-none font-sans text-base"
               />
               <button
+                type="button"
                 onClick={onClose}
-                className="p-1 rounded-lg hover:bg-white/10 text-slate-400 hover:text-slate-200 transition-colors"
+                aria-label="Close Command Palette"
+                className="p-1 rounded-lg hover:bg-white/10 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5" aria-hidden="true" />
               </button>
             </div>
 

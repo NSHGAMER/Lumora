@@ -267,7 +267,7 @@ export const CommandCenterView: React.FC<CommandCenterViewProps> = ({
               <span>SYSTEM KERNEL EVENTS</span>
               <span className="text-emerald-400">ONLINE</span>
             </div>
-            <div className="space-y-2 font-mono text-[11px] text-slate-400">
+            <div className="space-y-2 font-mono text-xs text-slate-400">
               <div className="flex items-center justify-between py-1 border-b border-white/5">
                 <span>[14:22:04] GPU_NODE_B12</span>
                 <span className="text-emerald-400 font-bold">READY</span>
