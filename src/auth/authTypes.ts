@@ -9,9 +9,13 @@ export interface User {
   name: string;
   email: string;
   role: SystemRole;
-  department: string;
+  department?: string;
   studentId?: string;
+  institutionalId: string;
+  isActive: boolean;
   createdAt?: string;
+  updatedAt?: string;
+  lastLoginAt?: string | null;
   avatarUrl?: string;
 }
 
@@ -22,6 +26,7 @@ export interface LoginCredentials {
 }
 
 export interface RegisterData {
+  institutionalId: string;
   fullName: string;
   email: string;
   password: string;
@@ -42,13 +47,16 @@ export interface ResetPasswordData {
 }
 
 export interface AuthContextType {
+  accessToken: string | null;
   user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
   status: AuthStatus;
   theme: ThemeMode;
   isMockSession: boolean;
   login: (credentials: LoginCredentials, isDemo?: boolean) => Promise<{ success: boolean; error?: string }>;
   register: (data: RegisterData) => Promise<{ success: boolean; error?: string }>;
-  logout: () => void;
+  logout: () => Promise<void>;
   updateProfile: (updates: Partial<User>) => void;
   changePassword: (data: PasswordChangeData) => Promise<{ success: boolean; error?: string }>;
   setTheme: (theme: ThemeMode) => void;

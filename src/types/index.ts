@@ -1,4 +1,4 @@
-export type SystemRole = 'student' | 'faculty' | 'admin';
+export type SystemRole = 'student' | 'faculty' | 'admin' | 'management' | 'staff';
 
 export type ActiveTab =
   | 'home'

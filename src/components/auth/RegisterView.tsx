@@ -11,6 +11,7 @@ interface RegisterViewProps {
 
 export const RegisterView: React.FC<RegisterViewProps> = ({ onSelectTab }) => {
   const { register } = useAuth();
+  const [institutionalId, setInstitutionalId] = useState('');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,6 +20,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onSelectTab }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // Password strength calculations
   const hasLength = password.length >= 8;
@@ -29,9 +31,15 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onSelectTab }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
+    setSuccessMessage(null);
 
-    if (!fullName.trim() || !email.trim() || !password || !confirmPassword) {
+    if (!institutionalId.trim() || !fullName.trim() || !email.trim() || !password || !confirmPassword) {
       setErrorMessage('Please complete all registration fields.');
+      return;
+    }
+
+    if (institutionalId.trim().length < 3) {
+      setErrorMessage('Institutional identifier must be at least 3 characters long.');
       return;
     }
 
@@ -53,6 +61,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onSelectTab }) => {
     setIsLoading(true);
     try {
       const result = await register({
+        institutionalId: institutionalId.trim(),
         fullName,
         email,
         password,
@@ -61,7 +70,10 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onSelectTab }) => {
       });
 
       if (result.success) {
-        onSelectTab('account');
+        setSuccessMessage('Account registered successfully! Redirecting to sign in...');
+        setTimeout(() => {
+          onSelectTab('login');
+        }, 1500);
       } else if (result.error) {
         setErrorMessage(result.error);
       }
@@ -109,6 +121,13 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onSelectTab }) => {
         {/* Registration Form Card */}
         <GlassCard interactive={false} glowColor="cyan" className="p-6 sm:p-8 space-y-6 border-cyan-500/20">
           
+          {successMessage && (
+            <div className="p-3.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-start gap-2.5 text-xs font-mono text-emerald-300">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+              <div className="leading-relaxed">{successMessage}</div>
+            </div>
+          )}
+
           {errorMessage && (
             <div className="p-3.5 rounded-xl bg-rose-500/15 border border-rose-500/30 flex items-start gap-2.5 text-xs font-mono text-rose-300">
               <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
@@ -118,6 +137,27 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onSelectTab }) => {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             
+            {/* Institutional Identifier */}
+            <div className="space-y-1.5">
+              <label htmlFor="reg-institutional-id" className="block text-xs font-mono text-slate-300 font-medium">
+                Institutional ID (Student ID or Faculty ID)
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                  <ShieldCheck className="w-4 h-4" />
+                </div>
+                <input
+                  id="reg-institutional-id"
+                  type="text"
+                  autoComplete="off"
+                  value={institutionalId}
+                  onChange={(e) => setInstitutionalId(e.target.value)}
+                  placeholder="e.g. STU-2026-001 or FAC-102"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/20 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 text-white font-mono text-xs placeholder:text-slate-600 transition-all"
+                />
+              </div>
+            </div>
+
             {/* Full Name */}
             <div className="space-y-1.5">
               <label htmlFor="reg-fullname" className="block text-xs font-mono text-slate-300 font-medium">

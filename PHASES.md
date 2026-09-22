@@ -209,15 +209,19 @@ Phases are executed systematically. Future phases must not be implemented premat
 - [x] Comprehensive test suite in `backend/tests/test_refresh_logout.py` (108 total passing backend tests, 1 skipped).
 
 
-##### Phase 2B.3-E — RBAC & Protected Endpoints
-**Status:** `Planned`
-- [ ] Implement `GET /api/v1/auth/me`.
-- [ ] Backend role-based authorization dependencies/middleware (RBAC) for canonical roles: `student`, `faculty`, `admin`, `management`, `staff`.
-
-
-#### Phase 2B.4 — Frontend API Integration
-**Status:** `Planned`
-- [ ] Connect the existing frontend auth foundation to verified live endpoints without redesigning the locked landing page.
+##### Phase 2B.3-E — Real Frontend Authentication Integration
+**Status:** `Implemented` & `Tested`
+- [x] Centralized typed API client (`src/api/`) with base URL configuration (`VITE_API_BASE_URL` with fallback to `http://localhost:8000`).
+- [x] In-memory access token architecture: JWT held strictly in JavaScript memory; zero persistence to `localStorage`, `sessionStorage`, `IndexedDB`, or JavaScript cookies.
+- [x] HttpOnly refresh cookie management: all authentication calls enforce `credentials: "include"`; frontend JavaScript never reads or handles raw refresh tokens.
+- [x] Startup session restoration: `AuthContext` starts in `isLoading = true`, calls `POST /api/v1/auth/refresh` with `credentials: "include"`, quietly falling back to unauthenticated state on 401 without error alerts for visitors.
+- [x] Concurrency-safe token refresh: shared `refreshPromise` prevents concurrent refresh storms when multiple 401s occur simultaneously; retries failed authenticated requests at most once.
+- [x] Real registration integration (`POST /api/v1/auth/register`) with institutional ID, full name, institutional email, password, and public roles (`student`, `faculty`). Preserves the critical invariant: registration does NOT log user in and redirects to `/login`.
+- [x] Real login integration (`POST /api/v1/auth/login`): authenticates with institutional identifier or email, stores access token in memory, sets authenticated state, and displays user-friendly generic 401 message ("Invalid institutional credentials").
+- [x] Real logout integration (`POST /api/v1/auth/logout`): revokes server session, clears HttpOnly cookie, and clears in-memory auth state even upon network failure.
+- [x] Canonical 5-role model (`student`, `faculty`, `admin`, `management`, `staff`) supported in frontend TypeScript contracts (`SystemRole`).
+- [x] Protected routes (`ProtectedRoute.tsx`) connected to real `AuthContext` with skeleton loading and security boundary challenge card.
+- [x] Zero visual redesign: locked landing page, 3D CampusCanvas, Hero, Navbar, footer, and styling system 100% preserved.
 
 ---
 

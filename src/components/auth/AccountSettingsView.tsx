@@ -70,8 +70,8 @@ export const AccountSettingsView: React.FC<AccountSettingsViewProps> = ({ onSele
     setTimeout(() => setProfileSaved(false), 3000);
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     onSelectTab('home');
   };
 
@@ -97,7 +97,7 @@ export const AccountSettingsView: React.FC<AccountSettingsViewProps> = ({ onSele
                 </Badge>
               </div>
               <p className="text-xs font-mono text-slate-400">
-                {user?.email} • {user?.studentId || 'Faculty Node'}
+                {user?.email} • {user?.institutionalId || user?.studentId || 'Institutional Node'}
               </p>
             </div>
           </div>
@@ -248,7 +248,7 @@ export const AccountSettingsView: React.FC<AccountSettingsViewProps> = ({ onSele
                   <span>In-Session Password Change</span>
                 </h2>
                 <p className="text-xs font-mono text-slate-400">
-                  Secure authenticated password update without external SMTP dependency.
+                  Backend endpoint scheduled for a future milestone. Authentication foundation currently active.
                 </p>
               </div>
 

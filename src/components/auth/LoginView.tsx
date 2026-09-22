@@ -79,13 +79,13 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSelectTab }) => {
           </p>
         </div>
 
-        {/* Phase 2A Architectural Notice */}
+        {/* Institutional Authentication Banner */}
         <div className="p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs font-mono text-blue-300 flex items-start gap-2.5">
           <Sparkles className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
           <div className="space-y-1">
-            <span className="font-semibold text-white">Phase 2A Frontend Architecture:</span>
+            <span className="font-semibold text-white">Institutional Authentication Node:</span>
             <p className="text-slate-300 text-xs leading-relaxed">
-              FastAPI backend connection will activate in Phase 2B. Test the UI below or use the one-click demo profiles.
+              FastAPI backend connected. Sign in with your registered institutional credentials or use the preview profiles below.
             </p>
           </div>
         </div>
