@@ -29,7 +29,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenJSR }) => {
               <span className="font-heading font-bold text-xl tracking-wider text-white">LUMORA</span>
             </button>
             <p className="text-slate-400 font-sans text-xs sm:text-sm max-w-sm leading-relaxed">
-              The Intelligent Campus Operating System. Designed with luxury dark aesthetics, sub-second telemetry, and JSR AI co-pilot integration.
+              The Intelligent Campus Optimising System. Designed with luxury dark aesthetics, sub-second telemetry, and JSR AI co-pilot integration.
             </p>
             <div
               role="status"
@@ -118,7 +118,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenJSR }) => {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs font-mono text-slate-500">
           <div>
-            © {new Date().getFullYear()} Lumora Systems Inc. The Intelligent Campus Operating System.
+            © {new Date().getFullYear()} Lumora Systems Inc. The Intelligent Campus Optimising System.
           </div>
           <nav aria-label="Footer Legal and Compliance Links" className="flex flex-wrap items-center gap-4 sm:gap-6">
             <button

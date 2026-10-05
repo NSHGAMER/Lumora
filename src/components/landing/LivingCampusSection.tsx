@@ -80,7 +80,7 @@ export const LivingCampusSection: React.FC = () => {
             className="text-base sm:text-xl text-slate-300 font-sans font-light leading-relaxed max-w-3xl mx-auto"
           >
             Every building. Every classroom. Every department. Every student. Every faculty member. <br />
-            <span className="text-cyan-400 font-semibold font-heading">Connected by one intelligent operating system.</span>
+            <span className="text-cyan-400 font-semibold font-heading">Connected by one intelligent optimising system.</span>
           </motion.p>
         </div>
 

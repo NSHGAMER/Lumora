@@ -2,7 +2,7 @@
 
 ## 1. High-Level Architecture Overview
 
-Lumora is architected as a distributed, decoupled, high-performance Campus Operating System. The platform separates client presentation, API gateway & business logic, autonomous intelligence orchestration, asynchronous workflow automation, and persistent data storage.
+Lumora is architected as a distributed, decoupled, high-performance Campus Optimising System. The platform separates client presentation, API gateway & business logic, autonomous intelligence orchestration, asynchronous workflow automation, and persistent data storage.
 
 ```
 ┌───────────────────────────────────────────────────────────────┐

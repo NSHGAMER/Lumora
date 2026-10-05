@@ -1,6 +1,6 @@
 # PHASES — Development Roadmap & Milestone Tracker
 
-This document outlines the sequential development roadmap for **Lumora — AI-Powered Campus Operating System**.
+This document outlines the sequential development roadmap for **Lumora — AI-Powered Campus Optimising System**.
 Phases are executed systematically. Future phases must not be implemented prematurely unless explicitly instructed.
 
 ### Status Definitions

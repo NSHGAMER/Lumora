@@ -42,7 +42,7 @@ export const PrivacyPolicyView: React.FC<PrivacyPolicyViewProps> = ({ onSelectTa
           Privacy Policy
         </h1>
         <p className="text-slate-400 font-sans text-sm sm:text-base max-w-3xl leading-relaxed">
-          Lumora is engineered as an intelligent campus operating system designed to safeguard institutional, academic, and personal data. This document outlines our data architecture, user rights, and processing protocols.
+          Lumora is engineered as an intelligent campus optimising system designed to safeguard institutional, academic, and personal data. This document outlines our data architecture, user rights, and processing protocols.
         </p>
 
         {/* Prototype Disclaimer Notice */}
@@ -89,7 +89,7 @@ export const PrivacyPolicyView: React.FC<PrivacyPolicyViewProps> = ({ onSelectTa
             <span className="text-cyan-400 font-mono text-sm">03.</span> How Information Is Used
           </h2>
           <p className="text-slate-400 leading-relaxed text-sm">
-            Collected data is utilized strictly to provide operating system functions, including generating personalized course schedules, balancing workstation capacity, answering campus queries via JSR, and routing administrative notifications. We do not monetize, sell, or license institutional data to commercial data brokers.
+            Collected data is utilized strictly to provide optimising system functions, including generating personalized course schedules, balancing workstation capacity, answering campus queries via JSR, and routing administrative notifications. We do not monetize, sell, or license institutional data to commercial data brokers.
           </p>
         </GlassCard>
 

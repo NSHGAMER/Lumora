@@ -108,7 +108,7 @@ export const CookiePreferencesView: React.FC<CookiePreferencesViewProps> = ({ on
             </div>
             <div className="pt-2 text-[11px] text-slate-500 flex items-center gap-1.5">
               <Info className="w-3 h-3 text-slate-400 shrink-0" />
-              <span>These items cannot be disabled as the campus operating system cannot function securely without them.</span>
+              <span>These items cannot be disabled as the campus optimising system cannot function securely without them.</span>
             </div>
           </div>
         </GlassCard>

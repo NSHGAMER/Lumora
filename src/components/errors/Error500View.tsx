@@ -49,7 +49,7 @@ export const Error500View: React.FC<Error500ViewProps> = ({
             System Fault.
           </h1>
           <p className="text-slate-400 font-sans text-sm sm:text-base max-w-md mx-auto leading-relaxed">
-            An unexpected runtime condition occurred within the campus operating system. Telemetry has logged the event for diagnostics.
+            An unexpected runtime condition occurred within the campus optimising system. Telemetry has logged the event for diagnostics.
           </p>
         </div>
 

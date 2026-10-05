@@ -1,6 +1,6 @@
 # DESIGN — Approved Visual Language & Design System
 
-This document specifies the locked design tokens, aesthetic standards, and UI guidelines for **Lumora — AI-Powered Campus Operating System**.
+This document specifies the locked design tokens, aesthetic standards, and UI guidelines for **Lumora — AI-Powered Campus Optimising System**.
 
 ---
 

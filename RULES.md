@@ -1,6 +1,6 @@
 # RULES — Strict Engineering & Governance Rules
 
-This document establishes the mandatory engineering standards, security invariants, architectural rules, and design constraints for all contributors and autonomous agents working on **Lumora — AI-Powered Campus Operating System**.
+This document establishes the mandatory engineering standards, security invariants, architectural rules, and design constraints for all contributors and autonomous agents working on **Lumora — AI-Powered Campus Optimising System**.
 
 ---
 

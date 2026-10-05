@@ -98,7 +98,7 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onSelectTab }) => {
             Create Your Lumora Profile
           </h1>
           <p className="text-slate-400 font-sans text-xs sm:text-sm max-w-md mx-auto">
-            Establish your identity within the Intelligent Campus Operating System.
+            Establish your identity within the Intelligent Campus Optimising System.
           </p>
         </div>
 

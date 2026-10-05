@@ -20,7 +20,7 @@ export const FeatureShowcase: React.FC<FeatureShowcaseProps> = ({
       id: 'cmd-center',
       title: 'Command Center',
       tagline: 'High-Density Operational Intelligence',
-      description: 'Replace fragmented legacy university portals with a single, unified operating system dashboard. Monitor live server loads, track student attendance, and execute actions in milliseconds.',
+      description: 'Replace fragmented legacy university portals with a single, unified optimising system dashboard. Monitor live server loads, track student attendance, and execute actions in milliseconds.',
       icon: LayoutDashboard,
       tabTarget: 'command' as ActiveTab,
       highlights: [

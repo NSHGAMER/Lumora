@@ -2,7 +2,7 @@
 
 ## 1. Product Identity
 - **Product Name:** Lumora
-- **Tagline / Definition:** AI-Powered Campus Operating System (Campus OS)
+- **Tagline / Definition:** AI-Powered Campus Optimising System (Campus OS)
 - **Core Intelligence:** JSR — The Intelligence
 - **Target Audience:** Students, Faculty, Administrators, Management, Institutional Staff
 - **System Classification:** Mission-critical Institutional Platform & Orchestration Hub
@@ -12,7 +12,7 @@
 ## 2. Executive Summary & Purpose
 Higher education institutions and university campuses operate across dozens of fragmented, legacy, and disconnected systems: Student Information Systems (SIS), Learning Management Systems (LMS), attendance kiosks, fee collection gateways, department portals, and physical facility monitors.
 
-**Lumora** is an intelligent campus operating system designed to unify academic, administrative, communication, automation, and AI-assisted institutional workflows into a single cohesive, high-performance, and futuristic control plane.
+**Lumora** is an intelligent campus optimising system designed to unify academic, administrative, communication, automation, and AI-assisted institutional workflows into a single cohesive, high-performance, and futuristic control plane.
 
 Lumora does not merely display dashboards; it orchestrates campus operations through **JSR — The Intelligence**, an autonomous AI co-pilot and multi-agent coordination system.
 

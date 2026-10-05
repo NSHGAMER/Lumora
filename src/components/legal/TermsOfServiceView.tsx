@@ -42,7 +42,7 @@ export const TermsOfServiceView: React.FC<TermsOfServiceViewProps> = ({ onSelect
           Terms of Service
         </h1>
         <p className="text-slate-400 font-sans text-sm sm:text-base max-w-3xl leading-relaxed">
-          These Terms of Service govern the authorized usage, operational rights, and mutual responsibilities for all students, faculty, and administrative personnel accessing the Lumora Campus Operating System.
+          These Terms of Service govern the authorized usage, operational rights, and mutual responsibilities for all students, faculty, and administrative personnel accessing the Lumora Campus Optimising System.
         </p>
 
         {/* Prototype Disclaimer Notice */}
@@ -73,7 +73,7 @@ export const TermsOfServiceView: React.FC<TermsOfServiceViewProps> = ({ onSelect
             <span className="text-cyan-400 font-mono text-sm">02.</span> Platform Purpose
           </h2>
           <p className="text-slate-400 leading-relaxed text-sm">
-            Lumora is designed to unify academic management, physical campus facility monitoring, role-specific command consoles, and AI-assisted workflow coordination. It serves as an institutional operating system rather than a public social utility.
+            Lumora is designed to unify academic management, physical campus facility monitoring, role-specific command consoles, and AI-assisted workflow coordination. It serves as an institutional optimising system rather than a public social utility.
           </p>
         </GlassCard>
 

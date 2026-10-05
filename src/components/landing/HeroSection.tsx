@@ -50,7 +50,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-heading font-extrabold tracking-tight text-white leading-[1.05]"
         >
           The Intelligent Campus <br className="hidden sm:inline" />
-          <span className="text-gradient-cyan">Operating System.</span>
+          <span className="text-gradient-cyan">Optimising System.</span>
         </motion.h1>
 
         {/* Subtitle */}

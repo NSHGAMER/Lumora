@@ -2,7 +2,7 @@
 
 ## A. Project Identity
 - **Product Name:** Lumora
-- **Classification:** AI-Powered Campus Operating System (Campus OS)
+- **Classification:** AI-Powered Campus Optimising System (Campus OS)
 - **Core Intelligence:** JSR — The Intelligence
 - **Repository:** `d:\Projects From PC\Lumora`
 
