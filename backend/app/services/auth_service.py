@@ -125,8 +125,8 @@ class AuthService:
             key=self.REFRESH_COOKIE_NAME,
             value=refresh_token,
             httponly=True,
-            secure=self.settings.is_production,
-            samesite="lax",
+            secure=self.settings.is_production or self.settings.refresh_cookie_samesite == "none",
+            samesite=self.settings.refresh_cookie_samesite,
             max_age=self.settings.jwt_refresh_token_expire_days * 86400,
             path=self.REFRESH_COOKIE_PATH,
         )
@@ -137,8 +137,8 @@ class AuthService:
             key=self.REFRESH_COOKIE_NAME,
             path=self.REFRESH_COOKIE_PATH,
             httponly=True,
-            secure=self.settings.is_production,
-            samesite="lax",
+            secure=self.settings.is_production or self.settings.refresh_cookie_samesite == "none",
+            samesite=self.settings.refresh_cookie_samesite,
         )
 
     async def refresh_session(

@@ -57,6 +57,11 @@ ENV/
 env/
 backend/.venv/
 backend/venv/
+.venv-verify/
+.task-temp/
+.vercel/
+.env.*
+!.env.example
 
 # Pytest / Coverage
 .pytest_cache/

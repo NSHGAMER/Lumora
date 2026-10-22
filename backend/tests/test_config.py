@@ -1,8 +1,23 @@
 """Test configuration validation and security constraints."""
 
 import pytest
+import os
 from pydantic import ValidationError
 from app.core.config import Settings
+
+
+def test_unconfigured_development_keys_are_unique(monkeypatch):
+    monkeypatch.delenv('JWT_SECRET_KEY', raising=False)
+    first = Settings(_env_file=None, LUMORA_ENV='development')
+    second = Settings(_env_file=None, LUMORA_ENV='development')
+    assert len(first.jwt_secret_key) >= 32
+    assert first.jwt_secret_key != second.jwt_secret_key
+
+
+def test_production_requires_an_explicit_key(monkeypatch):
+    monkeypatch.delenv('JWT_SECRET_KEY', raising=False)
+    with pytest.raises(ValidationError):
+        Settings(_env_file=None, LUMORA_ENV='production', CORS_ORIGINS=['https://campus.example'])
 
 
 def test_default_config() -> None:

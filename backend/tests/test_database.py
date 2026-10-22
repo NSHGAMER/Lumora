@@ -166,7 +166,8 @@ async def test_database_connection_failure_handling() -> None:
 
         health = manager.get_health_status()
         assert health["state"] == "disconnected"
-        assert "Connection refused" in health["details"]
+        assert "Connection refused" not in health["details"]
+        assert "Database unreachable" in health["details"]
 
 
 @pytest.mark.skipif(
