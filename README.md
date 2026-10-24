@@ -1,32 +1,22 @@
-# React + TypeScript + Vite
+# Lumora — Knowledge + Light
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Lumora is a Campus Optimising System built on React/TypeScript/Vite and FastAPI/MongoDB. JSR means Justified Semantic Reasoning.
 
-Currently, two official plugins are available:
+The authenticated workspace uses real campus records: directory profiles, academic catalog, conflict-checked timetables, publication and change requests, notices, calendar events, notifications, approved knowledge and durable workflows. The original landing-page visuals remain a product showcase; their illustrative metrics are not production telemetry.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- [Professor demonstration and local setup](DEMO_GUIDE.md)
+- [Deployment and secret configuration](DEPLOYMENT.md)
+- [Verification evidence and remaining limitations](VERIFICATION.md)
+- [Implemented architecture](ARCHITECTURE.md)
+- [Implementation checklist](IMPLEMENTATION_CHECKLIST.md)
 
-## React Compiler
+Production campus services require a MongoDB database, persistent API/worker host, and optional AI provider. The frontend reports missing configuration honestly. There are no embedded production accounts or AI credentials.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Development
 
-## Expanding the Oxlint configuration
+Use Node 24 and Python 3.13. Run `npm ci`, create `backend/.venv`, and install `backend/requirements.lock`. Configure the ignored environment files using the examples. Start the API from `backend` with `python -m uvicorn app.main:app --host localhost --port 8000`, the worker with `python -m app.worker`, and the frontend from the root with `npm run dev -- --host localhost`. See the demo guide for isolated MongoDB setup and safe seeding.
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## Checks
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Frontend: `npm run lint`, `npx tsc -b`, `npm run build`, `npm audit`.
+Backend (from `backend`): set `TEST_MONGODB_URI` to an isolated MongoDB server, then `python -m pytest tests -q`. Tests create random `lumora_test_*` databases and remove only their own fixtures. Atlas verification is separately opt-in. CI also builds the backend container.
