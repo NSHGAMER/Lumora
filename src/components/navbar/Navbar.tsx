@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Command, LayoutDashboard, Calendar, MapPin, UserCheck, ChevronDown, Terminal } from 'lucide-react';
+import { useAuth } from '../../auth';
 import type { ActiveTab, SystemRole } from '../../types';
 
 interface NavbarProps {
@@ -15,18 +16,17 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   onSelectTab,
-  role,
-  onChangeRole,
   onOpenCommandPalette,
   onOpenJSR,
 }) => {
+  const { user } = useAuth();
   const [showRoleDropdown, setShowRoleDropdown] = React.useState(false);
 
   const navItems = [
     { id: 'home' as ActiveTab, label: 'OS Showcase', icon: Terminal },
     { id: 'command' as ActiveTab, label: 'Command Center', icon: LayoutDashboard },
     { id: 'academics' as ActiveTab, label: 'Academics', icon: Calendar },
-    { id: 'campus' as ActiveTab, label: '3D Campus Grid', icon: MapPin },
+    { id: 'campus' as ActiveTab, label: 'Campus workspace', icon: MapPin },
   ];
 
   return (
@@ -105,35 +105,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               type="button"
               onClick={() => setShowRoleDropdown(!showRoleDropdown)}
-              aria-label="Switch system role"
+              aria-label="Account menu"
               aria-haspopup="true"
               aria-expanded={showRoleDropdown}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-white/10 hover:border-white/20 text-xs font-mono text-slate-200 transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60"
             >
               <UserCheck className="w-3.5 h-3.5 text-cyan-400" aria-hidden="true" />
-              <span className="capitalize">{role}</span>
+              <span className="capitalize">{user?.role ?? 'Guest'}</span>
               <ChevronDown className="w-3 h-3 text-slate-400" aria-hidden="true" />
             </button>
 
             {showRoleDropdown && (
               <div className="absolute right-0 mt-2 w-36 bg-[#0A1019] border border-white/10 rounded-xl shadow-2xl py-1 z-50">
-                {(['student', 'faculty', 'admin'] as SystemRole[]).map((r) => (
-                  <button
-                    key={r}
-                    type="button"
-                    onClick={() => {
-                      onChangeRole(r);
-                      setShowRoleDropdown(false);
-                    }}
-                    className={`w-full px-3 py-1.5 text-left text-xs font-mono capitalize transition-colors flex items-center justify-between cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 ${
-                      role === r ? 'text-cyan-400 bg-cyan-500/10' : 'text-slate-300 hover:bg-white/5'
-                    }`}
-                  >
-                    <span>{r} Mode</span>
-                    {role === r && <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />}
-                  </button>
-                ))}
-
                 <div className="pt-1 mt-1 border-t border-white/10">
                   <button
                     type="button"

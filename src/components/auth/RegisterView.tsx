@@ -218,22 +218,11 @@ export const RegisterView: React.FC<RegisterViewProps> = ({ onSelectTab }) => {
                   <div className="text-xs font-mono font-semibold">Student</div>
                   <div className="text-[10px] text-slate-500">Curricula & Schedules</div>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setRole('faculty')}
-                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
-                    role === 'faculty'
-                      ? 'bg-purple-500/10 border-purple-400 text-white shadow-accent-purple'
-                      : 'bg-white/[0.02] border-white/10 text-slate-400 hover:border-white/20'
-                  }`}
-                >
-                  <div className="text-xs font-mono font-semibold">Faculty</div>
-                  <div className="text-[10px] text-slate-500">Courses & Advisory</div>
-                </button>
+                <p className="text-xs text-slate-400 p-3">Faculty and staff accounts are provisioned by an administrator.</p>
               </div>
               <div className="flex items-center gap-1 text-[11px] font-mono text-slate-500 pt-1">
                 <Info className="w-3 h-3" />
-                <span>Administrator accounts require institutional registrar provisioning.</span>
+                <span>Only student accounts can be registered publicly.</span>
               </div>
             </div>
 

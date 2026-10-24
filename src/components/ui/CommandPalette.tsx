@@ -39,7 +39,6 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       title: 'Open Campus Command Center',
       category: 'Navigation',
       icon: LayoutDashboard,
-      shortcut: 'Cmd 1',
       action: () => {
         onSelectTab('command');
         onClose();
@@ -50,7 +49,6 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       title: 'Launch JSR AI Co-Pilot',
       category: 'AI Assistant',
       icon: Sparkles,
-      shortcut: 'Cmd J',
       action: () => {
         onOpenJSR();
         onClose();
@@ -61,7 +59,6 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       title: 'View Smart Academics & Schedule Matrix',
       category: 'Academics',
       icon: Calendar,
-      shortcut: 'Cmd 2',
       action: () => {
         onSelectTab('academics');
         onClose();
@@ -69,10 +66,9 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     },
     {
       id: 'cmd-4',
-      title: 'Campus 3D Spatial Grid & Lab Occupancy',
-      category: 'Spatial Grid',
+      title: 'Campus Directory, Notices & Calendar',
+      category: 'Campus workspace',
       icon: MapPin,
-      shortcut: 'Cmd 3',
       action: () => {
         onSelectTab('campus');
         onClose();
@@ -80,21 +76,21 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     },
     {
       id: 'cmd-5',
-      title: 'Ask JSR: "Optimize my schedule for next semester"',
+      title: 'Ask JSR: "Summarize the approved campus procedures"',
       category: 'JSR AI Action',
       icon: Cpu,
       action: () => {
-        onOpenJSR('Optimize my schedule for next semester');
+        onOpenJSR('Summarize the approved campus procedures');
         onClose();
       },
     },
     {
       id: 'cmd-6',
-      title: 'Ask JSR: "Check quantum lab GPU station availability"',
+      title: 'Ask JSR: "What is my published timetable?"',
       category: 'JSR AI Action',
       icon: Cpu,
       action: () => {
-        onOpenJSR('Check quantum lab GPU station availability');
+        onOpenJSR('What is my published timetable?');
         onClose();
       },
     },
@@ -236,11 +232,6 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                       </div>
 
                       <div className="flex items-center gap-2">
-                        {item.shortcut && (
-                          <span className="px-2 py-0.5 text-xs font-mono rounded bg-slate-800 text-slate-400 border border-slate-700">
-                            {item.shortcut}
-                          </span>
-                        )}
                         <ArrowRight className="w-4 h-4 text-slate-600 group-hover:text-cyan-400 group-hover:translate-x-0.5 transition-all" />
                       </div>
                     </button>
@@ -268,7 +259,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
             <div className="px-4 py-2.5 border-t border-white/10 bg-slate-950/60 flex items-center justify-between text-xs text-slate-500 font-mono">
               <div className="flex items-center gap-3">
                 <span className="flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">↑↓</kbd> navigate
+                  <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">Tab</kbd> navigate
                 </span>
                 <span className="flex items-center gap-1">
                   <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">↵</kbd> select

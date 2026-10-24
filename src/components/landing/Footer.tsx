@@ -33,11 +33,11 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenJSR }) => {
             </p>
             <div
               role="status"
-              aria-label="System status: All campus nodes operational (99.99%)"
+              aria-label="System status: Service status available in the campus portal"
               className="flex items-center gap-2 text-xs font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg w-fit"
             >
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true" />
-              <span>All Campus Nodes Operational (99.99%)</span>
+              <span>Campus Optimising System</span>
             </div>
           </div>
 
@@ -106,10 +106,10 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onOpenJSR }) => {
               Security Specs
             </div>
             <ul className="space-y-2 text-xs font-mono text-slate-400/90 select-text">
-              <li className="flex items-center gap-1.5"><span className="text-slate-600 select-none">•</span> Zero Trust OAuth2 / JWT</li>
-              <li className="flex items-center gap-1.5"><span className="text-slate-600 select-none">•</span> Google & Microsoft Login</li>
-              <li className="flex items-center gap-1.5"><span className="text-slate-600 select-none">•</span> FERPA & GDPR Compliant</li>
-              <li className="flex items-center gap-1.5"><span className="text-slate-600 select-none">•</span> n8n Automation Webhooks</li>
+              <li className="flex items-center gap-1.5"><span className="text-slate-600 select-none">•</span> Argon2id Passwords / JWT</li>
+              <li className="flex items-center gap-1.5"><span className="text-slate-600 select-none">•</span> Institutional Credential Login</li>
+              <li className="flex items-center gap-1.5"><span className="text-slate-600 select-none">•</span> Role-Based Access Controls</li>
+              <li className="flex items-center gap-1.5"><span className="text-slate-600 select-none">•</span> Campus Automation Workflows</li>
             </ul>
           </div>
 

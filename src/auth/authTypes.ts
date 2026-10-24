@@ -57,7 +57,7 @@ export interface AuthContextType {
   login: (credentials: LoginCredentials, isDemo?: boolean) => Promise<{ success: boolean; error?: string }>;
   register: (data: RegisterData) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
-  updateProfile: (updates: Partial<User>) => void;
+  updateProfile: (updates: Partial<User>) => Promise<void>;
   changePassword: (data: PasswordChangeData) => Promise<{ success: boolean; error?: string }>;
   setTheme: (theme: ThemeMode) => void;
 }

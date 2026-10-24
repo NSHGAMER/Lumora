@@ -14,7 +14,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSelectTab }) => {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
+  const rememberMe = true;
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -38,26 +38,13 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSelectTab }) => {
       if (!result.success && result.error) {
         setErrorMessage(result.error);
       } else {
-        onSelectTab('account');
+        onSelectTab('command');
       }
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleDemoLogin = async (role: 'student' | 'faculty') => {
-    setErrorMessage(null);
-    setIsLoading(true);
-    try {
-      const demoId = role === 'faculty' ? 'faculty.sarah@lumora.edu' : 'alex.chen@lumora.edu';
-      const result = await login({ identifier: demoId, password: 'demo-password-2026' }, true);
-      if (result.success) {
-        onSelectTab('account');
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <div className="pt-28 pb-20 px-4 sm:px-6 min-h-[85vh] flex items-center justify-center">
@@ -85,7 +72,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSelectTab }) => {
           <div className="space-y-1">
             <span className="font-semibold text-white">Institutional Authentication Node:</span>
             <p className="text-slate-300 text-xs leading-relaxed">
-              FastAPI backend connected. Sign in with your registered institutional credentials or use the preview profiles below.
+              Sign in with your registered institutional credentials. Connection and authentication errors will appear here.
             </p>
           </div>
         </div>
@@ -162,19 +149,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSelectTab }) => {
               </div>
             </div>
 
-            {/* Remember Me Checkbox */}
-            <div className="flex items-center justify-between text-xs font-mono text-slate-400">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="rounded bg-slate-900 border-white/10 text-cyan-500 focus:ring-cyan-500/40 cursor-pointer"
-                />
-                <span>Remember session</span>
-              </label>
-              <span className="text-[11px] text-slate-500">JWT Stateless</span>
-            </div>
+            <p className="text-xs text-slate-400">Sessions follow your institution’s configured expiration policy.</p>
 
             {/* Submit Button */}
             <button
@@ -195,37 +170,6 @@ export const LoginView: React.FC<LoginViewProps> = ({ onSelectTab }) => {
               )}
             </button>
           </form>
-
-          {/* Demo Profiles One-Click Selector */}
-          <div className="pt-4 border-t border-white/5 space-y-2.5">
-            <div className="text-[10px] font-mono text-slate-500 uppercase tracking-wider text-center">
-              Quick UI Preview Demo Profiles
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('student')}
-                disabled={isLoading}
-                className="p-2.5 rounded-lg bg-white/[0.02] hover:bg-cyan-500/10 border border-white/5 hover:border-cyan-500/30 text-left transition-all cursor-pointer group"
-              >
-                <div className="text-xs font-mono font-medium text-white group-hover:text-cyan-300">
-                  Student Demo
-                </div>
-                <div className="text-[10px] font-mono text-slate-500">Alex Chen (Eng)</div>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDemoLogin('faculty')}
-                disabled={isLoading}
-                className="p-2.5 rounded-lg bg-white/[0.02] hover:bg-purple-500/10 border border-white/5 hover:border-purple-500/30 text-left transition-all cursor-pointer group"
-              >
-                <div className="text-xs font-mono font-medium text-white group-hover:text-purple-300">
-                  Faculty Demo
-                </div>
-                <div className="text-[10px] font-mono text-slate-500">Dr. Sarah Vance</div>
-              </button>
-            </div>
-          </div>
 
         </GlassCard>
 

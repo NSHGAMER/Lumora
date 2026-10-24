@@ -35,7 +35,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           className="inline-flex items-center gap-2"
         >
           <Badge variant="cyan" pulse>
-            LUMORA OS 3.4 RELEASED
+            LUMORA OS · PRODUCT SHOWCASE
           </Badge>
           <span className="text-xs font-mono text-slate-400 hidden sm:inline-block">
             Powered by JSR AI Core & Three.js Telemetry
@@ -60,7 +60,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           transition={{ duration: 0.8, delay: 0.2 }}
           className="max-w-2xl mx-auto text-base sm:text-xl text-slate-400 font-sans font-light leading-relaxed"
         >
-          Re-imagining higher education with high-density intelligence, real-time spatial telemetry, automated academic routing, and JSR AI co-pilot.
+          Explore Lumora’s campus vision. Showcase metrics and scenarios are illustrative; authenticated portals display saved institutional records.
         </motion.p>
 
         {/* CTA Button Group */}

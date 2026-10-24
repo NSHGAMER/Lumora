@@ -55,8 +55,8 @@ export const JSRCoreSection: React.FC = () => {
       id: 'cap-3',
       title: 'Workflow Automation',
       icon: Zap,
-      description: 'Seamless integration with n8n webhooks to automate grading, registration, and room holds.',
-      badge: 'N8N PIPELINES',
+      description: 'Custom Python workflows for campus notices, timetable updates, and academic reminders.',
+      badge: 'CAMPUS WORKFLOWS',
     },
     {
       id: 'cap-4',

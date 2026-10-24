@@ -132,7 +132,7 @@ export const PrivacyPolicyView: React.FC<PrivacyPolicyViewProps> = ({ onSelectTa
             <span className="text-cyan-400 font-mono text-sm">07.</span> Communication and Automation
           </h2>
           <p className="text-slate-400 leading-relaxed text-sm">
-            Where integrated with workflow engines such as n8n, automated triggers dispatch urgent campus notifications, schedule alerts, or human escalation tickets. Communication channels operate exclusively upon explicit institutional configuration.
+            Configured Python workflows dispatch in-app campus notifications, timetable updates and scheduled reminders. Communication channels operate exclusively upon explicit institutional configuration.
           </p>
         </GlassCard>
 
