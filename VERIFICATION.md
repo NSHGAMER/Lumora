@@ -42,4 +42,11 @@ Voice is implemented with browser permission/unsupported states, but microphone/
 
 Known functional bounds: no holiday/substitution calendar, no recurring schedules, no uploaded-document/vector index, no autonomous AI write actions, no external delivery channels or self-service lost-password recovery. Record retrieval/history is bounded; see ARCHITECTURE.md. Password changes revoke refresh sessions; already-issued access tokens expire normally. These limitations must be disclosed in the demonstration.
 
-Git/CI and deployment outcomes are recorded after the release checks complete; see the delivery report in this conversation for the final commit and verified URLs.
+## Release verification — 2026-10-27
+
+- Re-ran the unchanged application: **192 passed, 1 skipped, 7 warnings in 11.44 seconds**. Frontend lint, explicit TypeScript check and production build passed. The same large-bundle warning remains.
+- PR #1 merged without rewriting history at `56290cecec60445d9cc6b661cebf7238c6bcdd11`. Both post-merge CI jobs passed, including real MongoDB integration tests, dependency audit and the Linux Docker build: [run 40439355048](https://github.com/NSHGAMER/Lumora/actions/runs/40439355048).
+- Vercel production deployment `dpl_3pB5cSUBQJsug2dgu6V1o8Kj79xu` is Ready for that exact main commit. Public URL: https://lumora-rouge-zeta.vercel.app. `/login` returned HTTP 200 with the expected `index-C_zIHEij.js` and `index-BpUNMIvN.css` assets. The browser rendered the original landing design and protected the Command Center from unauthenticated access.
+- Production login displays the explicit missing-API-configuration error. No browser console errors were recorded; Three.js emitted Clock deprecation warnings. Vercel project environment-variable inspection returned no variables, including no `VITE_API_BASE_URL`. No production API, Atlas connection, authenticated production dashboard or real AI response is certified.
+- Staff browser login, directory access, refresh restoration and logout succeeded against the preserved local database. A protected route denied access after logout. Management login and automation history succeeded; Accounts remained unavailable to management. Automated integration tests cover all five canonical roles.
+- No deployment-protection or authentication settings were changed. Production secrets and backend hosting remain external prerequisites; follow DEPLOYMENT.md, then repeat its production acceptance gate. The local professor demonstration remains available using DEMO_GUIDE.md.
