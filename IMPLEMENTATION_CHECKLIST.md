@@ -21,7 +21,7 @@ role headers. Reuse scheduling concepts only; preserve canonical Lumora auth.
 - [x] Durable restricted workflow worker with retries, leases and deduplication.
 - [x] Isolated fixtures, backend tests, frontend checks and browser verification.
 - [x] Demo/deployment guides and backend milestone commit.
-- [ ] Push, safe release and frontend URL verification.
+- [x] Push, safe release and frontend URL verification (PR #1 merged; Vercel production Ready on 2026-10-27).
 - [ ] Production API/worker/Atlas provisioning and end-to-end verification (services deferred by user).
 
 Keep the public landing components and navbar visually unchanged. No n8n,
