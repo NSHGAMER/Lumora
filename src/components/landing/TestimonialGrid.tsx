@@ -29,7 +29,7 @@ export const TestimonialGrid: React.FC = () => {
     <section className="py-20 px-4 sm:px-6 max-w-7xl mx-auto space-y-12">
       <div className="text-center space-y-3">
         <span className="text-xs font-mono text-cyan-400 uppercase tracking-widest">
-          FACULTY & STUDENT TRUST
+          ILLUSTRATIVE CAMPUS SCENARIOS
         </span>
         <h2 className="text-3xl sm:text-5xl font-heading font-bold text-white">
           Built for Future-Ready Universities.

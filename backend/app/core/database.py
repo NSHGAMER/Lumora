@@ -117,8 +117,7 @@ class DatabaseManager:
 
         try:
             logger.info(
-                "Connecting to MongoDB Atlas at [%s], database: [%s]...",
-                settings.mongodb_uri[:25] + "..." if settings.mongodb_uri else "None",
+                "Connecting to MongoDB database: [%s]...",
                 settings.mongodb_database,
             )
             self._client = AsyncMongoClient(
@@ -126,6 +125,7 @@ class DatabaseManager:
                 serverSelectionTimeoutMS=settings.mongodb_server_selection_timeout_ms,
                 minPoolSize=settings.mongodb_min_pool_size,
                 maxPoolSize=settings.mongodb_max_pool_size,
+                tz_aware=True,
             )
             self._database = self._client[settings.mongodb_database]
 
@@ -147,14 +147,14 @@ class DatabaseManager:
 
         except (ConnectionFailure, ServerSelectionTimeoutError) as exc:
             self._is_connected = False
-            self._last_error = str(exc)
-            logger.warning("MongoDB Atlas connection could not be established: %s", exc)
+            self._last_error = type(exc).__name__
+            logger.warning("MongoDB Atlas connection could not be established: %s", type(exc).__name__)
             if settings.is_production:
                 raise
         except Exception as exc:
             self._is_connected = False
-            self._last_error = str(exc)
-            logger.error("Unexpected error during MongoDB initialization: %s", exc)
+            self._last_error = type(exc).__name__
+            logger.error("Unexpected error during MongoDB initialization: %s", type(exc).__name__)
             if settings.is_production:
                 raise
 
@@ -167,7 +167,7 @@ class DatabaseManager:
             return bool(res.get("ok") == 1)
         except Exception as exc:
             self._is_connected = False
-            self._last_error = str(exc)
+            self._last_error = type(exc).__name__
             return False
 
     async def ensure_indexes(self) -> None:
@@ -188,7 +188,7 @@ class DatabaseManager:
             await directory_col.create_indexes(DIRECTORY_INDEXES)
             logger.info("Ensured %d indexes on 'directory_profiles' collection.", len(DIRECTORY_INDEXES))
         except Exception as exc:
-            logger.error("Failed to ensure collection indexes: %s", exc)
+            logger.error("Failed to ensure collection indexes: %s", type(exc).__name__)
             raise
 
     async def disconnect(self) -> None:
@@ -224,7 +224,7 @@ class DatabaseManager:
             }
         return {
             "state": "disconnected",
-            "details": f"Database unreachable. Error: {self._last_error or 'Unknown connection fault'}",
+            "details": "Database unreachable. Contact the service administrator.",
         }
 
 

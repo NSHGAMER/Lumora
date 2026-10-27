@@ -1,0 +1,9 @@
+# Optional local MongoDB only. Never expose this unauthenticated service publicly.
+services:
+  mongo:
+    image: mongo:8.0
+    ports: ['127.0.0.1:27028:27017']
+    volumes: ['lumora-demo:/data/db']
+    restart: unless-stopped
+volumes:
+  lumora-demo:

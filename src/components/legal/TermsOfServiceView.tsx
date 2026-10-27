@@ -134,7 +134,7 @@ export const TermsOfServiceView: React.FC<TermsOfServiceViewProps> = ({ onSelect
             <span className="text-cyan-400 font-mono text-sm">07.</span> Automated Actions
           </h2>
           <p className="text-slate-400 leading-relaxed text-sm">
-            Actions executed through workflow automation engines (such as n8n triggers or automated alert broadcasts) are subject to role permission auditing. Users initiating automated batch requests must verify action parameters before submission.
+            Actions executed through workflow automation engines (such as scheduled reminders or campus alert broadcasts) are subject to role permission auditing. Users initiating automated batch requests must verify action parameters before submission.
           </p>
         </GlassCard>
 

@@ -1,10 +1,21 @@
 from datetime import datetime, timezone
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, HTTPException
 from app.core.config import get_settings
 from app.core.database import db_manager
 from app.schemas.health import HealthResponse
 
 router = APIRouter(tags=["Health"])
+
+
+@router.get("/ready", summary="Database readiness")
+async def check_readiness():
+    if not db_manager.is_connected:
+        raise HTTPException(503, "Database is not ready")
+    try:
+        await db_manager.database.command("ping")
+    except Exception:
+        raise HTTPException(503, "Database is not ready")
+    return {"status": "ready"}
 
 
 @router.get(

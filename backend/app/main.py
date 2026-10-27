@@ -19,6 +19,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from app.api.v1.router import api_v1_router
 from app.core.config import Settings, get_settings
 from app.core.database import db_manager
+from app.core.request_security import install_request_security
 from app.schemas.response import ErrorDetail, ErrorResponse
 
 logger = logging.getLogger("lumora.backend")
@@ -61,6 +62,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         lifespan=lifespan,
     )
     app.state.settings = settings
+    app.dependency_overrides[get_settings] = lambda: settings
+    install_request_security(app, settings)
 
     # --------------------------------------------------------------------------
     # CORS Configuration (Strict Explicit Allowlist)
@@ -129,7 +132,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.exception_handler(Exception)
     async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-        logger.exception("Unhandled server exception processing %s: %s", request.url.path, exc)
+        logger.error("Unhandled server exception processing %s: %s", request.url.path, type(exc).__name__)
         safe_message = "An internal server fault occurred. Operation could not be completed."
         payload = ErrorResponse(
             success=False,

@@ -9,6 +9,7 @@ Adheres to 12-factor application principles and strict security invariants:
 
 from functools import lru_cache
 import json
+import secrets
 from typing import Any, Literal
 from pydantic import AliasChoices, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -87,8 +88,9 @@ class Settings(BaseSettings):
     # Phase 2B.3: Authentication & Token Security Configuration
     # --------------------------------------------------------------------------
     jwt_secret_key: str = Field(
-        default="lumora-insecure-dev-secret-key-change-in-production-min-32-chars",
+        default="",
         alias="JWT_SECRET_KEY",
+        repr=False,
         description="Cryptographic signing secret for JWT tokens",
     )
     jwt_algorithm: str = Field(
@@ -116,6 +118,12 @@ class Settings(BaseSettings):
         alias="JWT_AUDIENCE",
         description="JWT audience (aud) claim",
     )
+
+    refresh_cookie_samesite: Literal["lax", "strict", "none"] = Field(default="lax", alias="REFRESH_COOKIE_SAMESITE")
+    ai_base_url: str | None = Field(default=None, alias="AI_BASE_URL")
+    ai_api_key: str | None = Field(default=None, alias="AI_API_KEY", repr=False)
+    ai_model: str | None = Field(default=None, alias="AI_MODEL")
+    ai_timeout_seconds: int = Field(default=30, ge=1, le=60, alias="AI_TIMEOUT_SECONDS")
 
     @field_validator("cors_origins", mode="before")
     @classmethod
@@ -166,7 +174,8 @@ class Settings(BaseSettings):
                 raise ValueError(
                     "In production mode, JWT_SECRET_KEY must be at least 32 characters long."
                 )
-        return v
+        # Development keys are ephemeral unless explicitly configured.
+        return v or secrets.token_urlsafe(48)
 
     @property
     def is_production(self) -> bool:

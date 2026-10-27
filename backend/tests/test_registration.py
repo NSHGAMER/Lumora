@@ -153,8 +153,8 @@ async def test_successful_student_registration_service() -> None:
 
 
 @pytest.mark.asyncio
-async def test_successful_faculty_registration_service() -> None:
-    """Faculty registration succeeds with normalized fields."""
+async def test_faculty_registration_service_forbidden() -> None:
+    """Public users cannot self-assign faculty privileges."""
     repo = InMemoryUserRepository()
     security = SecurityService()
     service = RegistrationService(user_repository=repo, security_service=security)  # type: ignore[arg-type]
@@ -167,9 +167,9 @@ async def test_successful_faculty_registration_service() -> None:
         role="faculty",
     )
 
-    resp = await service.register(req)
-    assert resp.role == "faculty"
-    assert resp.is_active is True
+    with pytest.raises(HTTPException) as error:
+        await service.register(req)
+    assert error.value.status_code == 403
 
 
 @pytest.mark.asyncio
@@ -337,8 +337,8 @@ def test_api_register_student_success(auth_test_client: TestClient) -> None:
     assert "set-cookie" not in resp.headers
 
 
-def test_api_register_faculty_success(auth_test_client: TestClient) -> None:
-    """POST /api/v1/auth/register returns 201 for faculty registration."""
+def test_api_register_faculty_forbidden(auth_test_client: TestClient) -> None:
+    """Faculty accounts require administrative provisioning."""
     payload = {
         "institutional_id": "FAC-API-2026",
         "institutional_email": "api.faculty@university.edu",
@@ -347,8 +347,8 @@ def test_api_register_faculty_success(auth_test_client: TestClient) -> None:
         "role": "faculty",
     }
     resp = auth_test_client.post("/api/v1/auth/register", json=payload)
-    assert resp.status_code == 201
-    assert resp.json()["role"] == "faculty"
+    assert resp.status_code == 403
+    assert "password" not in resp.json()
 
 
 @pytest.mark.parametrize("privileged_role", ["admin", "management", "staff"])

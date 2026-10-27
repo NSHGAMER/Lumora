@@ -20,7 +20,7 @@ export const LivingCampusSection: React.FC = () => {
     { label: 'STUDENTS ONLINE', value: '18,420', change: '100% Synced', icon: Users, color: 'text-cyan-400' },
     { label: 'FACULTY ACTIVE', value: '640', change: '48 Departments', icon: ShieldCheck, color: 'text-blue-400' },
     { label: 'AI INFERENCE LATENCY', value: '12ms', change: '-42% vs Legacy', icon: Cpu, color: 'text-purple-400' },
-    { label: 'AUTOMATION PIPELINES', value: '99.8%', change: 'n8n Active', icon: Zap, color: 'text-emerald-400' },
+    { label: 'AUTOMATION PIPELINES', value: '99.8%', change: 'Product Preview', icon: Zap, color: 'text-emerald-400' },
     { label: 'ENERGY GRID SCORE', value: '94.2%', change: '340 MWh Saved', icon: Activity, color: 'text-cyan-400' },
   ];
 
@@ -28,7 +28,7 @@ export const LivingCampusSection: React.FC = () => {
     { label: 'JSR Intelligence Engine', badge: 'AI CORE' },
     { label: 'FastAPI Microservices', badge: 'BACKEND' },
     { label: 'MongoDB Atlas Grid', badge: 'DATABASE' },
-    { label: 'n8n Workflow Automation', badge: 'PIPELINES' },
+    { label: 'Campus Workflow Automation', badge: 'PIPELINES' },
   ];
 
   return (

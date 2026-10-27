@@ -1,3 +1,5 @@
+> Current implementation and limitations: see ARCHITECTURE.md, IMPLEMENTATION_CHECKLIST.md and VERIFICATION.md. The roadmap below includes future work.
+
 # PHASES — Development Roadmap & Milestone Tracker
 
 This document outlines the sequential development roadmap for **Lumora — AI-Powered Campus Optimising System**.
@@ -51,7 +53,7 @@ Phases are executed systematically. Future phases must not be implemented premat
 [Phase 7: Multi-Agent AI Ecosystem] ────────────► (PLANNED)
         │
         ▼
-[Phase 8: n8n Workflow Automation] ─────────────► (PLANNED)
+[Phase 8: Custom Python Workflow Automation] ─────────────► (PLANNED)
         │
         ▼
 [Phase 9: Advanced Intelligence & Voice AI] ────► (PLANNED)
@@ -315,9 +317,9 @@ Phases are executed systematically. Future phases must not be implemented premat
 
 ---
 
-### PHASE 8 — n8n Workflow Automation
+### PHASE 8 — Custom Python Workflow Automation
 **Status:** `Planned`
-- [ ] n8n instance setup and webhook endpoint configuration.
+- [ ] Persistent Python worker setup and registered trigger/action validation.
 - [ ] Event-driven triggers for campus actions (course drop/add, urgent notices).
 - [ ] Scheduled background jobs (daily attendance summaries, sync jobs).
 - [ ] Notification dispatching (in-app, push, and email when explicitly configured).

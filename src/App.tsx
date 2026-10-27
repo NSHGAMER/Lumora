@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Lenis from 'lenis';
 import type { ActiveTab, SystemRole } from './types';
-import { AuthProvider, useAuth } from './auth';
+import { AuthProvider, useAuth, ProtectedRoute } from './auth';
 import { Navbar } from './components/navbar/Navbar';
 import { HeroSection } from './components/landing/HeroSection';
 import { ProblemSection } from './components/landing/ProblemSection';
@@ -82,6 +82,7 @@ function AppContent() {
 
   // Initialize Lenis Smooth Scroll
   useEffect(() => {
+    if (activeTab !== 'home') return;
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -89,18 +90,20 @@ function AppContent() {
     });
     lenisRef.current = lenis;
 
+    let frame = 0;
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      frame = requestAnimationFrame(raf);
     }
 
-    requestAnimationFrame(raf);
+    frame = requestAnimationFrame(raf);
 
     return () => {
+      cancelAnimationFrame(frame);
       lenis.destroy();
       lenisRef.current = null;
     };
-  }, []);
+  }, [activeTab]);
 
   // Sync browser back/forward buttons with ActiveTab
   useEffect(() => {
@@ -178,23 +181,29 @@ function AppContent() {
 
           {/* Core Interactive Modules */}
           {activeTab === 'command' && (
+            <ProtectedRoute onSelectTab={handleSelectTab}>
             <CommandCenterView
               role={role}
               onOpenJSR={handleOpenJSR}
               onSelectTab={handleSelectTab}
             />
+            </ProtectedRoute>
           )}
 
           {activeTab === 'academics' && (
+            <ProtectedRoute onSelectTab={handleSelectTab}>
             <AcademicsView
               onOpenJSR={handleOpenJSR}
             />
+            </ProtectedRoute>
           )}
 
           {activeTab === 'campus' && (
+            <ProtectedRoute onSelectTab={handleSelectTab}>
             <CampusGridView
               onOpenJSR={handleOpenJSR}
             />
+            </ProtectedRoute>
           )}
 
           {/* Phase 1 Legal Suite */}
@@ -266,6 +275,7 @@ function AppContent() {
 
       {/* JSR AI Co-Pilot Assistant Modal */}
       <JSRAssistantModal
+        key={user?.id || 'guest'}
         isOpen={isJSRAssistantOpen}
         onClose={() => setIsJSRAssistantOpen(false)}
         initialQuery={jsrInitialQuery}

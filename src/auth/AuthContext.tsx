@@ -8,6 +8,8 @@ import type {
   PasswordChangeData,
   AuthContextType,
 } from './authTypes';
+import { apiFetch } from '../api/client';
+import type { BackendUser } from '../api/types';
 import { authStorage } from './authStorage';
 import {
   authApi,
@@ -84,19 +86,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Do not display an error banner on normal initial visitor load.
       }
 
-      // Check if there was an explicit demo/mock preview session saved locally
-      const demoUser = authStorage.getDemoUser();
-      if (demoUser) {
-        setUser(demoUser);
-        setStatus('authenticated');
-        setIsMockSession(true);
-      } else {
-        setAccessToken(null);
-        setAccessTokenState(null);
-        setUser(null);
-        setStatus('unauthenticated');
-        setIsMockSession(false);
-      }
+      authStorage.clearDemoUser();
+      setAccessToken(null);
+      setAccessTokenState(null);
+      setUser(null);
+      setStatus('unauthenticated');
+      setIsMockSession(false);
     };
 
     restoreSession();
@@ -123,26 +118,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { success: false, error: 'Please enter your institutional ID/email and password.' };
     }
 
-    if (isDemo) {
-      const isFaculty = credentials.identifier.toLowerCase().includes('faculty');
-      const mockUser: User = {
-        id: isFaculty ? 'usr-fac-102' : 'usr-stu-849',
-        name: isFaculty ? 'Dr. Sarah Vance' : 'Alex Chen',
-        email: isFaculty ? 's.vance@lumora.edu' : 'alex.chen@lumora.edu',
-        role: isFaculty ? 'faculty' : 'student',
-        department: isFaculty ? 'Quantum Computation' : 'Aerospace Engineering',
-        studentId: isFaculty ? undefined : 'STU-2026-8841',
-        institutionalId: isFaculty ? 'FAC-102' : 'STU-2026-8841',
-        isActive: true,
-        createdAt: '2026-08-15T09:00:00Z',
-      };
-
-      authStorage.setDemoUser(mockUser);
-      setUser(mockUser);
-      setStatus('authenticated');
-      setIsMockSession(true);
-      return { success: true };
-    }
+    if (isDemo) return { success: false, error: 'Use an institutionally provisioned demonstration account.' };
 
     try {
       const response = await authApi.login({
@@ -192,10 +168,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     // Role guard: Privileged administrative roles require institutional IT registrar provisioning
-    if (data.role !== 'student' && data.role !== 'faculty') {
+    if (data.role !== 'student') {
       return {
         success: false,
-        error: 'Administrator credentials require institutional IT registrar provisioning.',
+        error: 'Faculty and administrative accounts require institutional provisioning.',
       };
     }
 
@@ -227,35 +203,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   /**
    * Logout user from session.
    * Calls POST /api/v1/auth/logout to revoke server session and clear HttpOnly cookie.
-   * Always clears in-memory credentials even if the backend network call fails.
+   * Reports backend failure so logout can be retried.
    */
   const logout = async (): Promise<void> => {
-    try {
-      await authApi.logout();
-    } catch {
-      // Graceful fallback: ensure local memory is cleared regardless of network status
-    } finally {
-      setAccessToken(null);
-      setAccessTokenState(null);
-      authStorage.clearDemoUser();
-      setUser(null);
-      setStatus('unauthenticated');
-      setIsMockSession(false);
-    }
+    // Keep the session visible on failure so the user can retry server revocation.
+    await authApi.logout();
+    setAccessToken(null);
+    setAccessTokenState(null);
+    authStorage.clearDemoUser();
+    setUser(null);
+    setStatus('unauthenticated');
+    setIsMockSession(false);
   };
 
-  const updateProfile = (updates: Partial<User>) => {
-    if (!user) return;
-    const updated = { ...user, ...updates };
-    setUser(updated);
-    if (isMockSession) {
-      authStorage.setDemoUser(updated);
-    }
+  const updateProfile = async (updates: Partial<User>) => {
+    if (!user || !updates.name) return;
+    const updated = await apiFetch<BackendUser>('/api/v1/auth/me', { method: 'PATCH', body: JSON.stringify({ full_name: updates.name }) });
+    setUser(mapBackendUserToUser(updated));
   };
 
   /**
    * In-session password change.
-   * Truthful boundary: informs user that in-session password change endpoint is not yet supported by the backend.
+   * Uses the authenticated backend password endpoint.
    */
   const changePassword = async (data: PasswordChangeData): Promise<{ success: boolean; error?: string }> => {
     if (!data.currentPassword || !data.newPassword || !data.confirmPassword) {
@@ -270,10 +239,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { success: false, error: 'New password must be at least 8 characters.' };
     }
 
-    return {
-      success: false,
-      error: 'In-session password change endpoint is scheduled for a future backend milestone.',
-    };
+    try {
+      await apiFetch('/api/v1/auth/password', { method: 'POST', body: JSON.stringify({ current_password: data.currentPassword, new_password: data.newPassword }) });
+      await logout();
+      return { success: true };
+    } catch (err) { return { success: false, error: err instanceof Error ? err.message : 'Unable to change password' }; }
   };
 
   const isAuthenticated = status === 'authenticated' && !!user;

@@ -1,7 +1,8 @@
 import { ApiError, type AuthSuccessResponse } from './types';
 
 // Central API configuration adhering to Vite environment conventions
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/+$/, '') || 'http://localhost:8000';
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/+$/, '') || (import.meta.env.DEV ? 'http://localhost:8000' : '');
+const API_CONFIGURED = import.meta.env.DEV || Boolean(import.meta.env.VITE_API_BASE_URL);
 
 // SECURITY INVARIANT:
 // Access token is held in JavaScript memory ONLY.
@@ -42,6 +43,7 @@ let refreshPromise: Promise<string | null> | null = null;
  * Ensures concurrent 401s share a single in-flight refresh request.
  */
 export const executeTokenRefresh = async (): Promise<string | null> => {
+  if (!API_CONFIGURED) return null;
   if (refreshPromise) {
     return refreshPromise;
   }
@@ -99,6 +101,9 @@ export interface ApiFetchOptions extends RequestInit {
  * - Concurrency-safe single refresh on 401 with one-time retry
  */
 export async function apiFetch<T>(endpoint: string, options: ApiFetchOptions = {}): Promise<T> {
+  if (!API_CONFIGURED) {
+    throw new ApiError('Campus services are awaiting deployment configuration. The administrator must configure the production API URL.', 503);
+  }
   const { skipAuth = false, _retry = false, headers: customHeaders, ...restOptions } = options;
 
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
@@ -168,6 +173,11 @@ export async function apiFetch<T>(endpoint: string, options: ApiFetchOptions = {
   if (!response.ok) {
     let errorMessage = `HTTP Error ${response.status}`;
     if (responseData && typeof responseData === 'object') {
+      const envelope = responseData as { error?: { message?: string; details?: { field: string; message: string }[] } };
+      if (envelope.error?.message) {
+        const details = envelope.error.details?.map(item => `${item.field}: ${item.message}`).join('; ');
+        throw new ApiError(details || envelope.error.message, response.status, responseData);
+      }
       const dataObj = responseData as { detail?: string | { msg?: string }[] };
       if (typeof dataObj.detail === 'string') {
         errorMessage = dataObj.detail;

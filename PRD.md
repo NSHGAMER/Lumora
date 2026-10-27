@@ -1,3 +1,5 @@
+> Current implementation and limitations: see ARCHITECTURE.md, IMPLEMENTATION_CHECKLIST.md and VERIFICATION.md. The roadmap below includes future work.
+
 # PRD — Product Requirements Document
 
 ## 1. Product Identity
@@ -79,9 +81,9 @@ Lumora does not merely display dashboards; it orchestrates campus operations thr
    - *Analytics Agent:* Campus efficiency metrics, grade distributions, predictive dropouts.
    - *Administration Agent:* Role provisioning, facility lockouts, policy enforcement.
    - *Library Agent:* Digital repository search, physical book reserves.
-   - *Automation Agent:* Triggering n8n webhooks and background jobs.
+   - *Automation Agent:* Dispatching approved persistent Python workflows.
 5. **Workflow Execution & API Invocation:** Executing approved write operations through secure backend APIs.
-6. **n8n Orchestration:** Interfacing with n8n for multi-step external notifications, webhooks, and integrations.
+6. **Custom Automation:** Durable Python workflow execution; external channels require explicit provider integrations.
 7. **Communication & Voice Channels:** Supporting email (when explicitly configured), messaging bridges, and conversational AI voice interactions.
 8. **Human Escalation:** Recognizing boundaries where human administrative approval or counseling is mandatory.
 9. **Context & Audit Logging:** Maintaining stateful conversational context per session with full audit trails.
